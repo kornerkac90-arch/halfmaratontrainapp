@@ -3,9 +3,9 @@ import React from 'react';
 export default function MenuGrid({ onSelectMenu }) {
   const menuItems = [
     { id: 'today', title: "Današnji trening", icon: "🏃‍♀️" },
-    { id: 'plan', title: "Plan (12 nedelja)", icon: "📅" },
-    { id: 'history', title: "Istorija & Strava", icon: "📊" },
-    { id: 'settings', title: "Podešavanja", icon: "⚙️" },
+    { id: 'currentWeek', title: "Trenutna nedelja", icon: "📅" },
+    { id: 'plan', title: "Plan (12 nedelja)", icon: "📋" },
+    { id: 'history', title: "Istorija", icon: "📊" },
   ];
 
   return (
