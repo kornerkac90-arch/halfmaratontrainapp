@@ -311,8 +311,11 @@ export default function App() {
   };
 
   return (
-    <div style={{
-      backgroundColor: '#121212',
+ <div style={{
+      backgroundImage: `linear-gradient(rgba(18, 18, 18, 0.55), rgba(18, 18, 18, 0.55)), url('spoz.jpg')`,
+      backgroundSize: 'cover',
+      backgroundPosition: 'center',
+      backgroundAttachment: 'fixed',
       color: '#ffffff',
       minHeight: '100vh',
       display: 'flex',
@@ -329,7 +332,7 @@ export default function App() {
           onAvatarChange={handleImageChange}
         />
 
-        {activeScreen === 'today' ? (
+{activeScreen === 'today' ? (
           <TodayWorkout onBack={() => setActiveScreen('home')} />
         ) : activeScreen === 'currentWeek' ? (
           <CurrentWeekView onBack={() => setActiveScreen('home')} />
@@ -343,110 +346,136 @@ export default function App() {
             masterPlan={masterPlan} 
           />
         ) : (
-          <>
-            <ProgressBar 
-              doneKm={userData.totalKmDone}
-              totalKm={userData.totalKmTarget}
-              maratonName={userData.maraton}
-              raceDate={userData.raceDate}
-            />
+          <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '4px' }}>
+            <div style={{ width: '100%', boxSizing: 'border-box' }}>
+              <ProgressBar 
+                doneKm={userData.totalKmDone}
+                totalKm={userData.totalKmTarget}
+                maratonName={userData.maraton}
+                raceDate={userData.raceDate}
+              />
+            </div>
 
             {!isStarted && (
-              <div style={{
-                background: 'linear-gradient(135deg, #1f2937, #111827)',
-                border: '1px solid #374151',
-                borderRadius: '12px',
-                padding: '12px 16px',
-                marginBottom: '15px',
-                display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center'
-              }}>
-                <div>
-                  <div style={{ fontSize: '12px', color: '#9ca3af' }}>Početak 12-nedeljnog plana:</div>
-                  <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#f3f4f6' }}>27.07.2026. (Ponedeljak)</div>
-                </div>
-                <div style={{
-                  backgroundColor: '#22c55e22',
-                  border: '1px solid #22c55e',
-                  color: '#4ade80',
-                  padding: '6px 12px',
-                  borderRadius: '8px',
-                  fontWeight: 'bold',
-                  fontSize: '13px',
-                  textAlign: 'center'
-                }}>
-                  Još {daysUntilStart} {daysUntilStart === 1 ? 'dan' : 'dana'}!
-                </div>
-              </div>
-            )}
+  <div style={{
+    background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.75))',
+    backdropFilter: 'blur(12px)',
+    border: '1.5px solid rgba(34, 197, 94, 0.4)',
+    borderRadius: '16px',
+    padding: '14px 16px',
+    width: '100%',
+    boxSizing: 'border-box',
+    display: 'flex',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    boxShadow: '0 8px 24px rgba(34, 197, 94, 0.15)'
+  }}>
+    <div>
+      <div style={{ 
+        fontSize: '11px', 
+        fontWeight: '800', 
+        color: '#9ca3af',
+        textTransform: 'uppercase',
+        letterSpacing: '0.4px',
+        marginBottom: '2px'
+      }}>
+        Početak 12-nedeljnog plana:
+      </div>
+      <div style={{ 
+        fontSize: '13px', 
+        fontWeight: '900', 
+        color: '#ffffff',
+        letterSpacing: '0.3px'
+      }}>
+        27.07.2026. (Ponedeljak)
+      </div>
+    </div>
+    
+    <div style={{
+      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 184, 166, 0.2))',
+      border: '1px solid rgba(34, 197, 94, 0.6)',
+      color: '#4ade80',
+      padding: '6px 12px',
+      borderRadius: '10px',
+      fontWeight: '900',
+      fontSize: '12px',
+      textAlign: 'center',
+      textTransform: 'uppercase',
+      letterSpacing: '0.4px',
+      boxShadow: '0 4px 12px rgba(34, 197, 94, 0.25)'
+    }}>
+      Još {daysUntilStart} {daysUntilStart === 1 ? 'dan' : 'dana'}!
+    </div>
+  </div>
+)}
 
-            <div style={{
-              backgroundColor: '#1f2937',
-              border: '1px solid #374151',
-              borderRadius: '12px',
-              padding: '15px',
-              marginBottom: '15px',
-              boxShadow: '0 4px 6px -1px rgba(0, 0, 0, 0.1)'
-            }}>
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '8px' }}>
-                <span style={{ fontSize: '12px', fontWeight: 'bold', color: '#4ade80', textTransform: 'uppercase' }}>
-                  🏃‍♀️ Današnji trening ({todayWorkoutData.dayName})
-                </span>
-                <span style={{ fontSize: '11px', color: '#9ca3af' }}>
-                  {userData.today}
-                </span>
-              </div>
-              <div style={{ fontSize: '15px', fontWeight: 'bold', color: '#f3f4f6', marginBottom: '4px' }}>
-                {todayWorkoutData.title}
-              </div>
-              <div style={{ fontSize: '13px', color: '#d1d5db', lineHeight: '1.4' }}>
-                {todayWorkoutData.desc}
-              </div>
+            <div style={{ width: '100%', boxSizing: 'border-box' }}>
+              <StatsCards 
+                currentWeek={userData.currentWeek}
+                totalWeeks={userData.totalWeeks}
+                totalKmDone={userData.totalKmDone}
+                timespent={userData.timespent}
+              />
             </div>
 
-            <StatsCards 
-              currentWeek={userData.currentWeek}
-              totalWeeks={userData.totalWeeks}
-              totalKmDone={userData.totalKmDone}
-              timespent={userData.timespent}
-            />
-
-            <div style={{
-              backgroundColor: '#1f2937',
-              border: '1px solid #374151',
-              borderRadius: '12px',
-              padding: '12px 15px',
-              marginBottom: '15px',
-              display: 'flex',
-              justifyContent: 'space-between',
-              alignItems: 'center'
-            }}>
-              <div style={{ fontSize: '13px', color: '#d1d5db', fontWeight: '500' }}>
-                Poveži sa Stravom:
-              </div>
-              <button 
-                onClick={connectToStrava}
-                style={{
-                  backgroundColor: '#fc4c02',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '8px',
-                  padding: '6px 14px',
-                  fontWeight: 'bold',
-                  fontSize: '12px',
-                  cursor: 'pointer',
-                  display: 'flex',
-                  alignItems: 'center',
-                  gap: '5px'
-                }}
-              >
-                ⚡ Poveži Strava
-              </button>
+            <div style={{ width: '100%', boxSizing: 'border-box' }}>
+              <MenuGrid onSelectMenu={(id) => setActiveScreen(id)} />
             </div>
 
-            <MenuGrid onSelectMenu={(id) => setActiveScreen(id)} />
-          </>
+      <div style={{
+  background: 'linear-gradient(135deg, rgba(252, 76, 2, 0.15), rgba(31, 41, 55, 0.75))',
+  backdropFilter: 'blur(12px)',
+  border: '1.5px solid rgba(252, 76, 2, 0.4)',
+  borderRadius: '16px',
+  padding: '14px 16px',
+  width: '100%',
+  boxSizing: 'border-box',
+  display: 'flex',
+  justifyContent: 'space-between',
+  alignItems: 'center',
+  boxShadow: '0 8px 24px rgba(252, 76, 2, 0.2)'
+}}>
+  <div style={{ 
+    fontSize: '13px', 
+    fontWeight: '900', 
+    color: '#ffffff', 
+    letterSpacing: '0.5px',
+    textTransform: 'uppercase'
+  }}>
+    Poveži sa Stravom:
+  </div>
+  <button 
+    onClick={connectToStrava}
+    style={{
+      background: 'linear-gradient(135deg, #fc4c02, #e34401)',
+      color: '#ffffff',
+      border: 'none',
+      borderRadius: '10px',
+      padding: '8px 14px',
+      fontWeight: '900',
+      fontSize: '12px',
+      cursor: 'pointer',
+      display: 'flex',
+      alignItems: 'center',
+      gap: '6px',
+      letterSpacing: '0.4px',
+      textTransform: 'uppercase',
+      boxShadow: '0 4px 14px rgba(252, 76, 2, 0.4)',
+      transition: 'all 0.2s ease-in-out'
+    }}
+    onMouseEnter={(e) => {
+      e.currentTarget.style.transform = 'translateY(-1px)';
+      e.currentTarget.style.boxShadow = '0 6px 18px rgba(252, 76, 2, 0.6)';
+    }}
+    onMouseLeave={(e) => {
+      e.currentTarget.style.transform = 'translateY(0)';
+      e.currentTarget.style.boxShadow = '0 4px 14px rgba(252, 76, 2, 0.4)';
+    }}
+  >
+    ⚡ Poveži Strava
+  </button>
+</div>
+          </div>
         )}
       </div>
     </div>

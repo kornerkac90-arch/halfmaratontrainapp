@@ -168,7 +168,7 @@ export default function TodayWorkout({ onBack }) {
         padding: '20px',
         display: 'flex',
         flexDirection: 'column',
-        gap: '12px'
+        gap: '4px'
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
           <span style={{ fontSize: '16px', fontWeight: 'bold', color: '#f3f4f6' }}>

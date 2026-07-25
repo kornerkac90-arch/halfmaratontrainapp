@@ -45,7 +45,7 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
           Još uvek nema zabeleženih treninga u istoriji. Plan kreće 27.07.2026!
         </div>
       ) : (
-        <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
           {historyEntries.map(([dateStr, data]) => {
             // Formatiranje datuma u srpski format (npr. 27.7.2026.)
             const formattedDate = new Date(dateStr).toLocaleDateString('sr-RS', {

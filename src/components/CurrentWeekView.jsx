@@ -156,7 +156,7 @@ export default function CurrentWeekView({ onBack }) {
         Prikaz kalendarske nedelje (od ponedeljka do nedelje) iz zvaničnog plana.
       </p>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
         {weekDays.map((item, index) => (
           <div key={index} style={{
             backgroundColor: '#1f2937',

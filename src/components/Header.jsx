@@ -34,7 +34,7 @@ export default function Header({ name, avatar, badgeText, onAvatarChange }) {
 
 const styles = {
   header: { display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '24px' },
-  userInfo: { display: 'flex', alignItems: 'center', gap: '12px' },
+  userInfo: { display: 'flex', alignItems: 'center', gap: '4px' },
   avatar: { width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #00E676' },
   greeting: { fontSize: '14px', color: '#888' },
   planTitle: { fontSize: '18px', margin: '0', fontWeight: 'bold', color: '#fff' },

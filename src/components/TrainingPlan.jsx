@@ -197,7 +197,7 @@ export default function TrainingPlan({ onBack }) {
         📅 Plan treninga (12 nedelja - Ljubljanski polumaraton)
       </h2>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '10px', maxHeight: '450px', overflowY: 'auto', paddingRight: '5px' }}>
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '450px', overflowY: 'auto', paddingRight: '5px' }}>
         {weeks.map((w) => {
           const isExpanded = expandedWeek === w.week;
           return (
