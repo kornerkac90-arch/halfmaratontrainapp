@@ -1,6 +1,17 @@
 import React from 'react';
 
 export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) {
+  // Funkcija koja svaku reč pretvara da počinje velikim slovom
+  const capitalizeWords = (str) => {
+    if (!str) return '';
+    return str
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
+  const formattedMaratonName = capitalizeWords(maratonName || 'Ljubljanski polumaraton');
+
   return (
     <div style={{
       background: 'rgba(17, 24, 39, 0.75)',
@@ -17,10 +28,9 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
           fontSize: '13px',
           fontWeight: '900',
           color: '#ffffff',
-          letterSpacing: '0.5px',
-          textTransform: 'uppercase'
+          letterSpacing: '0.5px'
         }}>
-          {maratonName || 'Ljubljanski polumaraton'}
+          {formattedMaratonName}
         </div>
         <div style={{
           fontSize: '11px',
