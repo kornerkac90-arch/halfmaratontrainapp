@@ -19,6 +19,7 @@ export default function App() {
   const [isStarted, setIsStarted] = useState(false);
   const [todayWorkoutData, setTodayWorkoutData] = useState({ title: "Odmor", desc: "Odmor", km: "0 km", targetKm: 0, dayName: "Ponedeljak" });
   
+  
   // State za lokalnu sliku profila sa čuvanjem u localStorage
   const [userAvatar, setUserAvatar] = useState(() => {
     return localStorage.getItem('local_user_avatar') || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face";
@@ -346,20 +347,20 @@ export default function App() {
           avatar={userData.avatar}
           badgeText={isStarted ? "IDEEEMO! 🔥" : "U PRIPREMAMA ⏳"}
           onAvatarChange={handleImageChange}
+          onConnectStrava={connectToStrava}
         />
 
-{activeScreen === 'today' ? (
+        {activeScreen === 'today' ? (
           <TodayWorkout onBack={() => setActiveScreen('home')} />
         ) : activeScreen === 'currentWeek' ? (
           <CurrentWeekView onBack={() => setActiveScreen('home')} />
         ) : activeScreen === 'plan' ? (
           <TrainingPlan onBack={() => setActiveScreen('home')} />
-        ) 
-        : activeScreen === 'history' ? (
+        ) : activeScreen === 'history' ? (
           <HistoryView 
             onBack={() => setActiveScreen('home')} 
             workoutHistory={workoutHistory} 
-            masterPlan={trainingPlan} // KORISTIMO ZAMENJENI STANJE PLAN
+            masterPlan={trainingPlan} 
           />
         ) : (
           <div style={{ display: 'flex', flexDirection: 'column', width: '100%', gap: '4px' }}>
@@ -373,57 +374,57 @@ export default function App() {
             </div>
 
             {!isStarted && (
-  <div style={{
-    background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.75))',
-    backdropFilter: 'blur(12px)',
-    border: '1.5px solid rgba(34, 197, 94, 0.4)',
-    borderRadius: '16px',
-    padding: '8px 10px',
-    width: '100%',
-    boxSizing: 'border-box',
-    display: 'flex',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    boxShadow: '0 8px 24px rgba(34, 197, 94, 0.15)'
-  }}>
-    <div>
-      <div style={{ 
-        fontSize: '11px', 
-        fontWeight: '800', 
-        color: '#9ca3af',
-        textTransform: 'uppercase',
-        letterSpacing: '0.4px',
-        marginBottom: '2px'
-      }}>
-        Početak 12-nedeljnog plana:
-      </div>
-      <div style={{ 
-        fontSize: '13px', 
-        fontWeight: '900', 
-        color: '#ffffff',
-        letterSpacing: '0.3px'
-      }}>
-        27.07.2026. (Ponedeljak)
-      </div>
-    </div>
-    
-    <div style={{
-      background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 184, 166, 0.2))',
-      border: '1px solid rgba(34, 197, 94, 0.6)',
-      color: '#4ade80',
-      padding: '6px 8px',
-      borderRadius: '10px',
-      fontWeight: '900',
-      fontSize: '12px',
-      textAlign: 'center',
-      textTransform: 'uppercase',
-      letterSpacing: '0.4px',
-      boxShadow: '0 4px 12px rgba(34, 197, 94, 0.25)'
-    }}>
-      Još {daysUntilStart} {daysUntilStart === 1 ? 'dan' : 'dana'}!
-    </div>
-  </div>
-)}
+              <div style={{
+                background: 'linear-gradient(135deg, rgba(31, 41, 55, 0.75), rgba(17, 24, 39, 0.75))',
+                backdropFilter: 'blur(12px)',
+                border: '1.5px solid rgba(34, 197, 94, 0.4)',
+                borderRadius: '16px',
+                padding: '8px 10px',
+                width: '100%',
+                boxSizing: 'border-box',
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                boxShadow: '0 8px 24px rgba(34, 197, 94, 0.15)'
+              }}>
+                <div>
+                  <div style={{ 
+                    fontSize: '11px', 
+                    fontWeight: '800', 
+                    color: '#9ca3af',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.4px',
+                    marginBottom: '2px'
+                  }}>
+                    Početak 12-nedeljnog plana:
+                  </div>
+                  <div style={{ 
+                    fontSize: '13px', 
+                    fontWeight: '900', 
+                    color: '#ffffff',
+                    letterSpacing: '0.3px'
+                  }}>
+                    27.07.2026. (Ponedeljak)
+                  </div>
+                </div>
+                
+                <div style={{
+                  background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 184, 166, 0.2))',
+                  border: '1px solid rgba(34, 197, 94, 0.6)',
+                  color: '#4ade80',
+                  padding: '6px 8px',
+                  borderRadius: '10px',
+                  fontWeight: '900',
+                  fontSize: '12px',
+                  textAlign: 'center',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.4px',
+                  boxShadow: '0 4px 12px rgba(34, 197, 94, 0.25)'
+                }}>
+                  Još {daysUntilStart} {daysUntilStart === 1 ? 'dan' : 'dana'}!
+                </div>
+              </div>
+            )}
 
             <div style={{ width: '100%', boxSizing: 'border-box' }}>
               <StatsCards 
@@ -438,59 +439,6 @@ export default function App() {
               <MenuGrid onSelectMenu={(id) => setActiveScreen(id)} />
             </div>
 
-      <div style={{
-  background: 'linear-gradient(135deg, rgba(252, 76, 2, 0.15), rgba(31, 41, 55, 0.75))',
-  backdropFilter: 'blur(12px)',
-  border: '1.5px solid rgba(252, 76, 2, 0.4)',
-  borderRadius: '16px',
-  padding: '10px 12px',
-  width: '100%',
-  boxSizing: 'border-box',
-  display: 'flex',
-  justifyContent: 'space-between',
-  alignItems: 'center',
-  boxShadow: '0 8px 24px rgba(252, 76, 2, 0.2)'
-}}>
-  <div style={{ 
-    fontSize: '13px', 
-    fontWeight: '900', 
-    color: '#ffffff', 
-    letterSpacing: '0.5px',
-    textTransform: 'uppercase'
-  }}>
-    Poveži sa Stravom:
-  </div>
-  <button 
-    onClick={connectToStrava}
-    style={{
-      background: 'linear-gradient(135deg, #fc4c02, #e34401)',
-      color: '#ffffff',
-      border: 'none',
-      borderRadius: '10px',
-      padding: '8px 14px',
-      fontWeight: '900',
-      fontSize: '12px',
-      cursor: 'pointer',
-      display: 'flex',
-      alignItems: 'center',
-      gap: '6px',
-      letterSpacing: '0.4px',
-      textTransform: 'uppercase',
-      boxShadow: '0 4px 14px rgba(252, 76, 2, 0.4)',
-      transition: 'all 0.2s ease-in-out'
-    }}
-    onMouseEnter={(e) => {
-      e.currentTarget.style.transform = 'translateY(-1px)';
-      e.currentTarget.style.boxShadow = '0 6px 18px rgba(252, 76, 2, 0.6)';
-    }}
-    onMouseLeave={(e) => {
-      e.currentTarget.style.transform = 'translateY(0)';
-      e.currentTarget.style.boxShadow = '0 4px 14px rgba(252, 76, 2, 0.4)';
-    }}
-  >
-    ⚡ Poveži Strava
-  </button>
-</div>
           </div>
         )}
       </div>

@@ -1,7 +1,6 @@
 import React from 'react';
 
-export default function Header({ name, avatar, badgeText, onAvatarChange }) {
-  // Funkcija koja svaku reč pretvara da počinje velikim slovom
+export default function Header({ name, avatar, badgeText, onAvatarChange, onConnectStrava }) {
   const capitalizeWords = (str) => {
     if (!str) return '';
     return str
@@ -15,7 +14,6 @@ export default function Header({ name, avatar, badgeText, onAvatarChange }) {
 
   return (
     <>
-      {/* CSS animacija za ruku koja maše */}
       <style>
         {`
           @keyframes wave {
@@ -36,7 +34,6 @@ export default function Header({ name, avatar, badgeText, onAvatarChange }) {
 
       <div style={styles.header}>
         <div style={styles.userInfo}>
-          {/* Klikom na sliku otvara se izbor fajla */}
           <div style={styles.avatarWrapper}>
             <img 
               src={avatar} 
@@ -47,7 +44,6 @@ export default function Header({ name, avatar, badgeText, onAvatarChange }) {
             />
           </div>
           
-          {/* Skriveni input za izbor slike sa uređaja */}
           <input 
             type="file" 
             id="hiddenAvatarInput" 
@@ -64,9 +60,21 @@ export default function Header({ name, avatar, badgeText, onAvatarChange }) {
           </div>
         </div>
 
-        {/* Moderni Runna bedž */}
-        <div style={styles.badge}>
-          🔥 Warming Up
+        {/* Desni deo: Warming Up bedž + Mala Strava ikonica */}
+        <div style={styles.rightSection}>
+          <div style={styles.badge}>
+            🔥 WarmingUp
+          </div>
+
+      <button 
+    onClick={onConnectStrava}
+    title="Poveži sa Stravom"
+    style={styles.stravaIconBtn}
+  >
+    <svg width="16" height="16" viewBox="0 0 24 24" fill="#ffffff" xmlns="http://www.w3.org/2000/svg">
+      <path d="M15.387 17.944l-2.089-4.116h-3.065L15.387 24l5.154-10.172h-3.066m-7.108-5.99l3.554 7.006h3.554L10.378 0 3.22 14.128h3.554l3.605-7.006z"/>
+    </svg>
+  </button>
         </div>
       </div>
     </>
@@ -118,6 +126,11 @@ const styles = {
     color: '#ffffff',
     letterSpacing: '0.4px'
   },
+  rightSection: {
+    display: 'flex',
+    alignItems: 'center',
+    gap: '6px'
+  },
   badge: { 
     background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 184, 166, 0.2))',
     border: '1px solid rgba(34, 197, 94, 0.6)',
@@ -128,5 +141,21 @@ const styles = {
     fontWeight: '900',
     letterSpacing: '0.4px',
     boxShadow: '0 4px 12px rgba(34, 197, 94, 0.2)'
+  },
+  stravaIconBtn: {
+    width: '32px',
+    height: '32px',
+    borderRadius: '10px',
+    background: 'linear-gradient(135deg, #fc4c02, #e34401)',
+    border: 'none',
+    color: '#ffffff',
+    fontWeight: '900',
+    fontSize: '14px',
+    cursor: 'pointer',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    boxShadow: '0 4px 12px rgba(252, 76, 2, 0.4)',
+    transition: 'all 0.2s ease-in-out'
   }
 };
