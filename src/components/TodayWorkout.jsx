@@ -139,6 +139,14 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
       alert("Greška: Nije moguće pomeriti trening jer je danas nedelja – prelazak u narednu nedelju nije dozvoljen!");
       return;
     }
+    // Poruke za svako dugme
+    if (status === 'completed') {
+      alert("Bravo! Trening je uspešno označen kao urađen i upisan u statistiku! 🏅");
+    } else if (status === 'moved') {
+      alert("Trening je uspešno pomeren unutar tekuće nedelje. 🔄");
+    } else if (status === 'skipped') {
+      alert("Trening je zabeležen kao preskočen. Glavu gore, sutra je novi dan! 💪");
+    }
 
     if (onUpdateStatus) {
       onUpdateStatus({

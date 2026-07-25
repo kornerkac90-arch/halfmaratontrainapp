@@ -1,5 +1,19 @@
 import React from 'react';
 
+const weeklyQuotes = [
+  " Temelj se gradi polako, samo budi dosledna! 🚀",
+  " Navika se rađa, ne preskači korake! 💪",
+  " Telo se navikava, snaga polako raste! ⚡",
+  " Prvi mesec je iza tebe, ritam je već tu! 🎯",
+  " Ulazimo u višu brzinu, drži fokus! 🔥",
+  " Polovina osnovnog dela, izdrži tempo! 🏃‍♂️",
+  " Kilometraža raste, mentalna snaga još više! 🏔️",
+  " Generalne probe su tu da ti daju samopouzdanje! 🏅",
+  " Još malo do ciljne pravine, ne posustaj! 🌟",
+  " Kreće odmor, čuvaj svežinu za dan D! 🍃",
+  " Nedelja je tvoja! Ljubljana te zove, spremna si! 🏆"
+];
+
 export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, timespent }) {
   const statItems = [
     {
@@ -31,23 +45,26 @@ export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, times
     }
   ];
 
+  // Automatski bira poruku na osnovu tekuće nedelje (uzima u obzir da niz kreće od indeksa 0)
+  const currentQuote = weeklyQuotes[Math.min(currentWeek - 1, weeklyQuotes.length - 1)];
+
   return (
     <div style={{
       background: 'rgba(17, 24, 39, 0.75)',
       backdropFilter: 'blur(12px)',
       border: '1px solid rgba(55, 65, 81, 0.6)',
       borderRadius: '16px',
-      padding: '6px 8px',
+      padding: '10px 12px',
       width: '100%',
       boxSizing: 'border-box',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
     }}>
-      {/* Naslov sekcije i Strava dugme */}
+      {/* Naslov sekcije */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: '12px'
+        marginBottom: '10px'
       }}>
         <div style={{
           fontSize: '12px',
@@ -65,7 +82,8 @@ export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, times
         display: 'grid',
         gridTemplateColumns: '1fr 1fr 1fr',
         gap: '8px',
-        width: '100%'
+        width: '100%',
+        marginBottom: '10px'
       }}>
         {statItems.map((item) => (
           <div
@@ -104,6 +122,22 @@ export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, times
             </div>
           </div>
         ))}
+      </div>
+
+      {/* Motivaciona poruka za tekuću nedelju */}
+      <div style={{
+        background: 'rgba(34, 197, 94, 0.1)',
+        border: '1px solid rgba(34, 197, 94, 0.35)',
+        borderRadius: '12px',
+        padding: '2px 6px',
+        fontSize: '11px',
+        color: '#4ade80',
+        textAlign: 'center',
+        fontWeight: '800',
+        letterSpacing: '0.3px',
+        boxShadow: '0 4px 12px rgba(0,0,0,0.2)'
+      }}>
+        💡 {currentQuote}
       </div>
     </div>
   );
