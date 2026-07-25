@@ -1,6 +1,15 @@
 import React from 'react';
 
 export default function CurrentWeekView({ onBack }) {
+  // Funkcija koja svaku reč pretvara da počinje velikim slovom
+  const capitalizeWords = (str) => {
+    if (!str) return '';
+    return str
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   // Izračunavanje tekuće nedelje na osnovu datuma 27.07.2026.
   const startDate = new Date('2026-07-27');
   const today = new Date();
@@ -124,62 +133,140 @@ export default function CurrentWeekView({ onBack }) {
       { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
       { dayName: "Petak", title: "Odmor", desc: "Odmor", km: "0 km" },
       { dayName: "Subota", title: "Dan pred trku", desc: "Lagani nadražaj: 5 km laganog trčanja @ 7:20 min/km + 3 x 100m lagana ubrzanja", km: "5 km" },
-      { dayName: "Nedelja", title: "DAN UTRKE 🏅", desc: "POLUMARATON (Ljubljana - Cilj ispod 2h 30m)", km: "21.1 km" }
+      { dayName: "Nedelja", title: "Dan utrke", desc: "Polumaratonski nastup (Ljubljana - Cilj ispod 2h 30m)", km: "21.1 km" }
     ]
   };
 
   const weekDays = masterPlan[currentWeekNum] || [];
 
   return (
-    <div style={{ width: '100%', color: '#ffffff' }}>
-      <button 
-        onClick={onBack}
-        style={{
-          backgroundColor: '#374151',
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      boxSizing: 'border-box'
+    }}>
+      {/* Top Bar / Nazad dugme */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '2px'
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            background: 'rgba(31, 41, 55, 0.7)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            color: '#ffffff',
+            borderRadius: '12px',
+            padding: '8px 14px',
+            fontSize: '12px',
+            fontWeight: '800',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'}
+          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+        >
+          ← Nazad na tablu
+        </button>
+        <div style={{
+          fontSize: '11px',
+          fontWeight: '900',
+          color: '#9ca3af',
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
+          Nedeljni pregled
+        </div>
+      </div>
+
+      {/* Zaglavlje sekcije */}
+      <div style={{ marginBottom: '4px' }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '900',
           color: '#ffffff',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '8px 16px',
-          cursor: 'pointer',
-          marginBottom: '15px',
-          fontWeight: 'bold',
-          fontSize: '13px'
-        }}
-      >
-        ← Nazad na tablu
-      </button>
+          textTransform: 'uppercase',
+          letterSpacing: '0.8px',
+          marginBottom: '4px',
+          textShadow: '0 0 10px rgba(34, 197, 94, 0.4)'
+        }}>
+          Trenutna nedelja {currentWeekNum}
+        </h2>
+        <p style={{
+          fontSize: '11px',
+          color: '#9ca3af',
+          fontWeight: '500'
+        }}>
+          Kalendarski prikaz treninga od ponedeljka do nedelje iz zvaničnog plana.
+        </p>
+      </div>
 
-      <h2 style={{ fontSize: '18px', marginBottom: '15px', color: '#4ade80' }}>
-        📅 Trenutna nedelja (Nedelja {currentWeekNum})
-      </h2>
-      <p style={{ fontSize: '12px', color: '#9ca3af', marginBottom: '15px' }}>
-        Prikaz kalendarske nedelje (od ponedeljka do nedelje) iz zvaničnog plana.
-      </p>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px' }}>
+      {/* Lista dana */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {weekDays.map((item, index) => (
           <div key={index} style={{
-            backgroundColor: '#1f2937',
-            border: '1px solid #374151',
-            borderRadius: '10px',
-            padding: '12px 15px',
+            backgroundImage: `linear-gradient(rgba(17, 24, 39, 0.88), rgba(17, 24, 39, 0.94)), url('/trenutnanedelja.jpg')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.1)',
+            borderRadius: '14px',
+            padding: '10px 14px',
             display: 'flex',
             flexDirection: 'column',
-            gap: '6px'
+            gap: '5px',
+            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
+            boxSizing: 'border-box'
           }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{ fontSize: '13px', fontWeight: 'bold', color: '#4ade80' }}>
-                {item.dayName}
+              <span style={{
+                fontSize: '11px',
+                fontWeight: '900',
+                color: '#4ade80',
+                textTransform: 'uppercase',
+                letterSpacing: '0.5px'
+              }}>
+                {capitalizeWords(item.dayName)}
               </span>
-              <span style={{ backgroundColor: '#22c55e22', color: '#4ade80', padding: '2px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold' }}>
+              <span style={{
+                background: 'rgba(34, 197, 94, 0.15)',
+                border: '1px solid rgba(34, 197, 94, 0.3)',
+                color: '#4ade80',
+                padding: '2px 8px',
+                borderRadius: '8px',
+                fontSize: '10px',
+                fontWeight: '900',
+                letterSpacing: '0.5px'
+              }}>
                 {item.km}
               </span>
             </div>
-            <div style={{ fontSize: '14px', fontWeight: 'bold', color: '#f3f4f6' }}>
-              {item.title}
+            <div style={{
+              fontSize: '14px',
+              fontWeight: '900',
+              color: '#ffffff',
+              textTransform: 'uppercase',
+              letterSpacing: '0.5px',
+              textShadow: '0 0 8px rgba(34, 197, 94, 0.3)'
+            }}>
+              {capitalizeWords(item.title)}
             </div>
-            <div style={{ fontSize: '12px', color: '#d1d5db', lineHeight: '1.4' }}>
-              {item.desc}
+            <div style={{
+              fontSize: '11px',
+              color: '#cbd5e1',
+              lineHeight: '1.4',
+              fontWeight: '500'
+            }}>
+              {capitalizeWords(item.desc)}
             </div>
           </div>
         ))}

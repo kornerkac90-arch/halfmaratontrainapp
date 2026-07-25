@@ -3,6 +3,15 @@ import React, { useState } from 'react';
 export default function TrainingPlan({ onBack }) {
   const [expandedWeek, setExpandedWeek] = useState(null);
 
+  // Funkcija koja svaku reč pretvara da počinje velikim slovom
+  const capitalizeWords = (str) => {
+    if (!str) return '';
+    return str
+      .split(' ')
+      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
+      .join(' ');
+  };
+
   const weeks = [
     {
       week: 1,
@@ -119,7 +128,7 @@ export default function TrainingPlan({ onBack }) {
     {
       week: 9,
       total: "Ukupno ~39 km",
-      focus: "Najduži tjedan - Generalna proba",
+      focus: "Najduža nedelja - Generalna proba",
       details: [
         "PON: Odmor",
         "UTO: Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1",
@@ -160,8 +169,8 @@ export default function TrainingPlan({ onBack }) {
     },
     {
       week: 12,
-      total: "FINALNI TJEDAN",
-      focus: "Tapering i Trka - Ljubljana!",
+      total: "Finalna nedelja",
+      focus: "Tapering i trka - Ljubljana",
       details: [
         "PON: Odmor",
         "UTO: Odmor",
@@ -169,68 +178,164 @@ export default function TrainingPlan({ onBack }) {
         "ČET: Odmor",
         "PET: Odmor",
         "SUB (Dan prije): Lagani nadražaj: 5 km @ 7:20 min/km + 3 x 100m ubrzanja",
-        "NED (UTRKA): POLUMARATON (Cilj ispod 2h 30m) 🏅"
+        "NED (Utrka): Polumaratonski nastup (Cilj ispod 2h 30m)"
       ]
     }
   ];
 
   return (
-    <div style={{ width: '100%', color: '#ffffff' }}>
-      <button 
-        onClick={onBack}
-        style={{
-          backgroundColor: '#374151',
+    <div style={{
+      width: '100%',
+      display: 'flex',
+      flexDirection: 'column',
+      gap: '12px',
+      boxSizing: 'border-box'
+    }}>
+      {/* Top Bar / Nazad dugme */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        marginBottom: '2px'
+      }}>
+        <button
+          onClick={onBack}
+          style={{
+            background: 'rgba(31, 41, 55, 0.7)',
+            backdropFilter: 'blur(10px)',
+            border: '1px solid rgba(255, 255, 255, 0.15)',
+            color: '#ffffff',
+            borderRadius: '12px',
+            padding: '8px 14px',
+            fontSize: '12px',
+            fontWeight: '800',
+            cursor: 'pointer',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '6px',
+            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
+            transition: 'all 0.2s ease'
+          }}
+          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'}
+          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
+        >
+          ← Nazad na tablu
+        </button>
+        <div style={{
+          fontSize: '11px',
+          fontWeight: '900',
+          color: '#9ca3af',
+          textTransform: 'uppercase',
+          letterSpacing: '1px'
+        }}>
+          Glavni plan
+        </div>
+      </div>
+
+      {/* Zaglavlje sekcije */}
+      <div style={{ marginBottom: '4px' }}>
+        <h2 style={{
+          fontSize: '18px',
+          fontWeight: '900',
           color: '#ffffff',
-          border: 'none',
-          borderRadius: '8px',
-          padding: '8px 16px',
-          cursor: 'pointer',
-          marginBottom: '15px',
-          fontWeight: 'bold',
-          fontSize: '13px'
-        }}
-      >
-        ← Nazad na tablu
-      </button>
+          textTransform: 'uppercase',
+          letterSpacing: '0.8px',
+          marginBottom: '4px',
+          textShadow: '0 0 10px rgba(34, 197, 94, 0.4)'
+        }}>
+          Plan treninga (12 nedelja)
+        </h2>
+        <p style={{
+          fontSize: '11px',
+          color: '#9ca3af',
+          fontWeight: '500'
+        }}>
+          Kompletan pripremni plan za ljubljanski polumaraton. Klikni na nedelju za detaljan pregled.
+        </p>
+      </div>
 
-      <h2 style={{ fontSize: '18px', marginBottom: '15px', color: '#4ade80' }}>
-        📅 Plan treninga (12 nedelja - Ljubljanski polumaraton)
-      </h2>
-
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '4px', maxHeight: '450px', overflowY: 'auto', paddingRight: '5px' }}>
+      {/* Lista nedelja */}
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        gap: '8px',
+        maxHieght: 'none',
+        overflowY: 'visible',
+        paddingRight: '0px'
+      }}>
         {weeks.map((w) => {
           const isExpanded = expandedWeek === w.week;
           return (
-            <div 
+            <div
               key={w.week}
               onClick={() => setExpandedWeek(isExpanded ? null : w.week)}
               style={{
-                backgroundColor: '#1f2937',
-                border: isExpanded ? '1px solid #4ade80' : '1px solid #374151',
-                borderRadius: '10px',
-                padding: '12px',
+                backgroundImage: `linear-gradient(rgba(17, 24, 39, 0.88), rgba(17, 24, 39, 0.94)), url('/plan.jpg')`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backdropFilter: 'blur(10px)',
+                border: isExpanded ? '1px solid rgba(34, 197, 94, 0.6)' : '1px solid rgba(255, 255, 255, 0.1)',
+                borderRadius: '14px',
+                padding: '12px 14px',
                 cursor: 'pointer',
-                transition: '0.2s'
+                display: 'flex',
+                flexDirection: 'column',
+                gap: '6px',
+                boxShadow: isExpanded ? '0 6px 20px rgba(34, 197, 94, 0.15)' : '0 4px 12px rgba(0, 0, 0, 0.3)',
+                boxSizing: 'border-box',
+                transition: 'all 0.2s ease'
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{ fontWeight: 'bold', color: '#f3f4f6', fontSize: '14px' }}>
-                  Nedelja {w.week} {w.week === 1 ? '🎯 (Start: 27.07.)' : ''}
+                <span style={{
+                  fontSize: '12px',
+                  fontWeight: '900',
+                  color: '#ffffff',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px'
+                }}>
+                  Nedelja {w.week} {w.week === 1 ? '(Start: 27.07.)' : ''}
                 </span>
-                <span style={{ backgroundColor: '#22c55e22', color: '#4ade80', padding: '2px 8px', borderRadius: '6px', fontSize: '12px', fontWeight: 'bold' }}>
-                  {w.total}
+                <span style={{
+                  background: 'rgba(34, 197, 94, 0.15)',
+                  border: '1px solid rgba(34, 197, 94, 0.3)',
+                  color: '#4ade80',
+                  padding: '2px 8px',
+                  borderRadius: '8px',
+                  fontSize: '10px',
+                  fontWeight: '900',
+                  letterSpacing: '0.5px'
+                }}>
+                  {capitalizeWords(w.total)}
                 </span>
               </div>
-              <div style={{ fontSize: '13px', color: '#9ca3af', marginTop: '4px' }}>
-                {w.focus}
+              <div style={{
+                fontSize: '12px',
+                color: '#4ade80',
+                fontWeight: '700',
+                letterSpacing: '0.3px'
+              }}>
+                {capitalizeWords(w.focus)}
               </div>
 
               {/* Detalji po danima koji se otvaraju na klik */}
               {isExpanded && (
-                <div style={{ marginTop: '10px', borderTop: '1px solid #374151', paddingTop: '8px', display: 'flex', flexDirection: 'column', gap: '4px' }}>
+                <div style={{
+                  marginTop: '8px',
+                  borderTop: '1px solid rgba(255, 255, 255, 0.1)',
+                  paddingTop: '8px',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  gap: '6px'
+                }}>
                   {w.details.map((day, idx) => (
-                    <div key={idx} style={{ fontSize: '12px', color: '#d1d5db', lineHeight: '1.4' }}>
-                      • {day}
+                    <div key={idx} style={{
+                      fontSize: '11px',
+                      color: '#cbd5e1',
+                      lineHeight: '1.4',
+                      fontWeight: '500'
+                    }}>
+                      • {capitalizeWords(day)}
                     </div>
                   ))}
                 </div>

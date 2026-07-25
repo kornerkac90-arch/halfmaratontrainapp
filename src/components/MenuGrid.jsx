@@ -6,40 +6,40 @@ export default function MenuGrid({ onSelectMenu }) {
       id: 'today',
       title: 'DANAŠNJI TRENING',
       subtitle: 'Aktivnost za danas',
-      gradient: 'linear-gradient(135deg, rgba(34, 197, 94, 0.15), rgba(20, 184, 166, 0.15))',
+      image: 'danas.jpg',
       borderColor: 'rgba(34, 197, 94, 0.4)',
       shadowColor: 'rgba(34, 197, 94, 0.2)',
-      icon: '🏃‍♂️',
+      icon: '',
       textColor: '#4ade80'
     },
     {
       id: 'currentWeek',
       title: 'TRENUTNA NEDELJA',
       subtitle: 'Pregled sedmice',
-      gradient: 'linear-gradient(135deg, rgba(59, 130, 246, 0.15), rgba(99, 102, 241, 0.15))',
+      image: 'trenutnanedelja.jpg',
       borderColor: 'rgba(59, 130, 246, 0.4)',
       shadowColor: 'rgba(59, 130, 246, 0.2)',
-      icon: '📅',
+      icon: '',
       textColor: '#60a5fa'
     },
     {
       id: 'plan',
       title: 'PLAN (12 NEDELJA)',
       subtitle: 'Kompletan raspored',
-      gradient: 'linear-gradient(135deg, rgba(234, 179, 8, 0.15), rgba(249, 115, 22, 0.15))',
+      image: 'plan.jpg',
       borderColor: 'rgba(234, 179, 8, 0.4)',
       shadowColor: 'rgba(234, 179, 8, 0.2)',
-      icon: '📋',
+      icon: '',
       textColor: '#facc15'
     },
     {
       id: 'history',
       title: 'ISTORIJA',
       subtitle: 'Evidencija trčanja',
-      gradient: 'linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(236, 72, 153, 0.15))',
+      image: 'istorija.jpg',
       borderColor: 'rgba(168, 85, 247, 0.4)',
       shadowColor: 'rgba(168, 85, 247, 0.2)',
-      icon: '📊',
+      icon: '',
       textColor: '#e879f9'
     }
   ];
@@ -57,7 +57,9 @@ export default function MenuGrid({ onSelectMenu }) {
           key={item.id}
           onClick={() => onSelectMenu(item.id)}
           style={{
-            background: item.gradient,
+            backgroundImage: `linear-gradient(rgba(17, 24, 39, 0.65), rgba(17, 24, 39, 0.75)), url('/${item.image}')`,
+            backgroundSize: 'cover',
+            backgroundPosition: 'center',
             backdropFilter: 'blur(10px)',
             border: `1px solid ${item.borderColor}`,
             borderRadius: '16px',
