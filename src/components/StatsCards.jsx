@@ -37,7 +37,7 @@ export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, times
       backdropFilter: 'blur(12px)',
       border: '1px solid rgba(55, 65, 81, 0.6)',
       borderRadius: '16px',
-      padding: '14px',
+      padding: '6px 8px',
       width: '100%',
       boxSizing: 'border-box',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
@@ -75,7 +75,7 @@ export default function StatsCards({ currentWeek, totalWeeks, totalKmDone, times
               backdropFilter: 'blur(10px)',
               border: `1px solid ${item.borderColor}`,
               borderRadius: '12px',
-              padding: '10px 6px',
+              padding: '6px 2px',
               textAlign: 'center',
               boxShadow: `0 4px 16px ${item.shadowColor}`,
               display: 'flex',

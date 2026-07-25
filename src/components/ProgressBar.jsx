@@ -7,7 +7,7 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
       backdropFilter: 'blur(12px)',
       border: '1px solid rgba(55, 65, 81, 0.6)',
       borderRadius: '16px',
-      padding: '16px',
+      padding: '6px',
       width: '100%',
       boxSizing: 'border-box',
       boxShadow: '0 8px 24px rgba(0, 0, 0, 0.3)'
@@ -32,7 +32,7 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
       </div>
 
       {/* GPS Krivudava Strava linija */}
-      <div style={{ width: '100%', height: '32px', position: 'relative', margin: '4px 0' }}>
+      <div style={{ width: '100%', height: '24px', position: 'relative', margin: '4px 0' }}>
         <svg viewBox="0 0 300 35" style={{ width: '100%', height: '100%', overflow: 'visible' }}>
           {/* Pozadinska (neaktivna) krivudava staza */}
           <path

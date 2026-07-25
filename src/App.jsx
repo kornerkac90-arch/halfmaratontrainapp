@@ -321,7 +321,7 @@ export default function App() {
       display: 'flex',
       flexDirection: 'column',
       alignItems: 'center',
-      padding: '20px',
+      padding: '10px 14px',
       fontFamily: 'Inter, sans-serif'
     }}>
       <div style={{ width: '100%', maxWidth: '400px' }}>
@@ -362,7 +362,7 @@ export default function App() {
     backdropFilter: 'blur(12px)',
     border: '1.5px solid rgba(34, 197, 94, 0.4)',
     borderRadius: '16px',
-    padding: '14px 16px',
+    padding: '8px 10px',
     width: '100%',
     boxSizing: 'border-box',
     display: 'flex',
@@ -395,7 +395,7 @@ export default function App() {
       background: 'linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(20, 184, 166, 0.2))',
       border: '1px solid rgba(34, 197, 94, 0.6)',
       color: '#4ade80',
-      padding: '6px 12px',
+      padding: '6px 8px',
       borderRadius: '10px',
       fontWeight: '900',
       fontSize: '12px',
@@ -427,7 +427,7 @@ export default function App() {
   backdropFilter: 'blur(12px)',
   border: '1.5px solid rgba(252, 76, 2, 0.4)',
   borderRadius: '16px',
-  padding: '14px 16px',
+  padding: '10px 12px',
   width: '100%',
   boxSizing: 'border-box',
   display: 'flex',

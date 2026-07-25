@@ -38,5 +38,5 @@ const styles = {
   avatar: { width: '64px', height: '64px', borderRadius: '50%', objectFit: 'cover', border: '2px solid #00E676' },
   greeting: { fontSize: '14px', color: '#888' },
   planTitle: { fontSize: '18px', margin: '0', fontWeight: 'bold', color: '#fff' },
-  badge: { backgroundColor: '#00E676', color: '#000', padding: '6px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }
+  badge: { backgroundColor: '#00E676', color: '#000', padding: '8px 12px', borderRadius: '20px', fontSize: '12px', fontWeight: 'bold' }
 };
