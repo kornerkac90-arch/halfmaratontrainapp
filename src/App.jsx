@@ -10,7 +10,7 @@ import HistoryView from './components/HistoryView';
 
 const STRAVA_CLIENT_ID = '267445';
 const STRAVA_CLIENT_SECRET = 'f1c6f100a8b9aa1989ef3aa281ccd8c1341e172d'; 
-const REDIRECT_URI = 'http://192.168.0.21/';
+const REDIRECT_URI = 'http://192.168.0.21:5173/';
 
 export default function App() {
   const [currentDateStr, setCurrentDateStr] = useState('');
