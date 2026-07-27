@@ -29,116 +29,115 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
 
   const rawMasterPlan = {
     1: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (1 min brže ~6:30 / 1 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 8 km @ 7:10 - 7:30 min/km", km: "8 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (1 min brže ~6:30 / 1 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 8 km @ 7:10 - 7:30 min/km", km: "8 km" }
     ],
     2: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (2 min brže ~6:30 / 2 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 10 km @ 7:10 - 7:30 min/km", km: "10 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (2 min brže ~6:30 / 2 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 10 km @ 7:10 - 7:30 min/km", km: "10 km" }
     ],
     3: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (2 min brže ~6:30 / 1 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Fartlek", desc: "Fartlek (40 min): 10 min zagrijavanje + 20 min smjenjivanja (2 min brže ~6:30 / 1 min sporije ~7:30) + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
     ],
     4: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Fartlek (Oporavak)", desc: "Fartlek (35 min): 10 min zagrijavanje + 15 min piramida (1'-1'-2'-2'-3'-3'-2'-2'-1'-1' uz 1' pauze) + 8 min rastrčavanje", km: "~5 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 8 km @ 7:10 - 7:30 min/km", km: "8 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Fartlek (Oporavak)", desc: "Fartlek (35 min): 10 min zagrijavanje + 15 min piramida (1'-1'-2'-2'-3'-3'-2'-2'-1'-1' uz 1' pauze) + 8 min rastrčavanje", km: "~5 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 8 km @ 7:10 - 7:30 min/km", km: "8 km" }
     ],
     5: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Intervali", desc: "12 min zagrijavanje + 6 x 400m (~5:45 - 6:00 min/km) uz 90s pauze + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Intervali", desc: "12 min zagrijavanje + 6 x 400m (~5:45 - 6:00 min/km) uz 90s pauze + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
     ],
     6: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Intervali (800m)", desc: "10 min zagrijavanje + 4 x 800m (~6:00 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 14 km @ 7:10 - 7:30 min/km", km: "14 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Intervali (800m)", desc: "10 min zagrijavanje + 4 x 800m (~6:00 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 14 km @ 7:10 - 7:30 min/km", km: "14 km" }
     ],
     7: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Intervali (500m)", desc: "12 min zagrijavanje + 6 x 500m (~5:45 - 6:00 min/km) uz 90s pauze + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina (Test gelova)", desc: "Dužina 16 km @ 7:10 - 7:30 min/km (Testiranje ishrane i gelova)", km: "16 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Intervali (500m)", desc: "12 min zagrijavanje + 6 x 500m (~5:45 - 6:00 min/km) uz 90s pauze + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina (Test gelova)", desc: "Dužina 16 km @ 7:10 - 7:30 min/km (Testiranje ishrane i gelova)", km: "16 km" }
     ],
     8: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Fartlek piramida", desc: "Fartlek (42 min): 10 min zagrijavanje + piramida (1'-2'-3'-4'-3'-2'-1' uz 1' lagano) + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Fartlek piramida", desc: "Fartlek (42 min): 10 min zagrijavanje + piramida (1'-2'-3'-4'-3'-2'-1' uz 1' lagano) + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 6 km @ 7:15 min/km + Trening snage 2/3", km: "6 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
     ],
     9: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Tempo trčanje", desc: "10 min zagrijavanje + 2 x 2 km (~6:30 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~7 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 8 km @ 7:15 min/km + Trening snage 2/3", km: "8 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Generalna proba", desc: "Dužina 18 km @ 7:10 - 7:30 min/km (Generalna proba dužine)", km: "18 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Tempo trčanje", desc: "10 min zagrijavanje + 2 x 2 km (~6:30 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~7 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 8 km @ 7:15 min/km + Trening snage 2/3", km: "8 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Generalna proba", desc: "Dužina 18 km @ 7:10 - 7:30 min/km (Generalna proba dužine)", km: "18 km" }
     ],
     10: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
-      { day: "Sreda", title: "Kilometarski intervali", desc: "10 min zagrijavanje + 4 x 1000m (~6:00 - 6:10 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~8 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje", desc: "Lagano trčanje 8 km @ 7:15 min/km", km: "8 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 14 km @ 7:10 - 7:30 min/km", km: "14 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja + Trening snage 1", km: "5 km" },
+      { dayName: "Sreda", title: "Kilometarski intervali", desc: "10 min zagrijavanje + 4 x 1000m (~6:00 - 6:10 min/km) uz 2 min pauze + 10 min rastrčavanje", km: "~8 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje", desc: "Lagano trčanje 8 km @ 7:15 min/km", km: "8 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 14 km @ 7:10 - 7:30 min/km", km: "14 km" }
     ],
     11: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Lagano trčanje + Ubrzanja", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja", km: "5 km" },
-      { day: "Sreda", title: "Tempo trčanje", desc: "10 min zagrijavanje + 5 km (~6:30 min/km) + 10 min rastrčavanje", km: "~7 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Lagano trčanje", desc: "Lagano trčanje 8 km @ 7:15 min/km", km: "8 km" },
-      { day: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Lagano trčanje + Ubrzanja", desc: "Lagano trčanje 5 km @ 7:15 min/km + 3 x 100m ubrzanja", km: "5 km" },
+      { dayName: "Sreda", title: "Tempo trčanje", desc: "10 min zagrijavanje + 5 km (~6:30 min/km) + 10 min rastrčavanje", km: "~7 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Lagano trčanje", desc: "Lagano trčanje 8 km @ 7:15 min/km", km: "8 km" },
+      { dayName: "Subota", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Nedelja", title: "Dužina", desc: "Dužina 12 km @ 7:10 - 7:30 min/km", km: "12 km" }
     ],
     12: [
-      { day: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Utorak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Sreda", title: "Kratki intervali", desc: "10 min zagrijavanje + 3 x 1000m (~6:30 min/km) uz 2 min lagane pauze + 10 min rastrčavanje", km: "~6 km" },
-      { day: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Petak", title: "Odmor", desc: "Odmor", km: "0 km" },
-      { day: "Subota", title: "Dan pred trku", desc: "Lagani nadražaj: 5 km laganog trčanja @ 7:20 min/km + 3 x 100m lagana ubrzanja", km: "5 km" },
-      { day: "Nedelja", title: "DAN UTRKE", desc: "POLUMARATON (Ljubljana - Cilj ispod 2h 30m)", km: "21.1 km" }
+      { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Utorak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Sreda", title: "Kratki intervali", desc: "10 min zagrijavanje + 3 x 1000m (~6:30 min/km) uz 2 min lagane pauze + 10 min rastrčavanje", km: "~6 km" },
+      { dayName: "Četvrtak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Petak", title: "Odmor", desc: "Odmor", km: "0 km" },
+      { dayName: "Subota", title: "Dan pred trku", desc: "Lagani nadražaj: 5 km laganog trčanja @ 7:20 min/km + 3 x 100m lagana ubrzanja", km: "5 km" },
+      { dayName: "Nedelja", title: "DAN UTRKE", desc: "POLUMARATON (Ljubljana - Cilj ispod 2h 30m)", km: "21.1 km" }
     ]
   };
 
-  // Dodajemo week i dayIndex SVAKOM treningu da uvek znamo njegov ID
   const masterPlan = {};
   for (let w = 1; w <= 12; w++) {
     masterPlan[w] = rawMasterPlan[w].map((wk, dIdx) => ({
@@ -150,18 +149,21 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
 
   const existingHistory = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
   const historyValsForCheck = Object.values(existingHistory);
-  const isWorkoutDone = (wObj) => historyValsForCheck.some(h => h.week === wObj.week && h.dayIndex === wObj.dayIndex && h.status === 'done');
+  
+  // Funkcija za proveru da li je trening urađen u arhivi
+  const isWorkoutDone = (wObj) => {
+    if (!wObj || !wObj.week || wObj.dayIndex === undefined) return false;
+    return historyValsForCheck.some(h => h.week === wObj.week && h.dayIndex === wObj.dayIndex && h.status === 'done');
+  };
 
   const savedMovedWorkout = localStorage.getItem('current_today_workout');
   const forcedWorkout = savedMovedWorkout ? JSON.parse(savedMovedWorkout) : null;
   const scheduledTodayWorkout = masterPlan[currentWeekNum] ? masterPlan[currentWeekNum][dayOfWeekIndex] : masterPlan[1][0];
   
-  // PAMETNA LOGIKA: Rešavanje onoga "aplikacija se fiksirala za datum"
   let resolvedWorkout = forcedWorkout;
   
   if (!resolvedWorkout) {
     if (isWorkoutDone(scheduledTodayWorkout)) {
-      // Ako je današnji odrađen (jer je prebačen ranije), nađi sledeći u nedelji!
       let foundNext = false;
       for (let i = dayOfWeekIndex + 1; i < 7; i++) {
         const nextInLine = masterPlan[currentWeekNum][i];
@@ -171,14 +173,19 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           break;
         }
       }
-      if (!foundNext) resolvedWorkout = scheduledTodayWorkout; // Svi odradjeni
+      if (!foundNext) resolvedWorkout = scheduledTodayWorkout; 
     } else {
       resolvedWorkout = scheduledTodayWorkout;
     }
   }
 
-  const todayWorkout = resolvedWorkout;
-  const isCurrentlyDone = isWorkoutDone(todayWorkout); // Zastavica da li je ovaj koji gledamo gotov
+  // PAMETNA ZAKRPA: Ako je iz keša povukao stari trening bez ID-ja, dodajemo mu ga odmah!
+  const todayWorkout = {
+    ...resolvedWorkout,
+    week: resolvedWorkout.week || currentWeekNum,
+    dayIndex: resolvedWorkout.dayIndex !== undefined ? resolvedWorkout.dayIndex : dayOfWeekIndex,
+    dayName: resolvedWorkout.dayName || resolvedWorkout.day
+  };
 
   const handleAction = (status) => {
     if (status === 'moved' && todayWorkout.dayIndex === 6 && !forcedWorkout) {
@@ -202,14 +209,13 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
     if (status === 'completed') {
       const numericKm = parseFloat(todayWorkout.km) || 0;
       
-      // SPAJANJE PODATAKA SA STRAVOM BEZ BRISANJA!
       existingHistory[dateKey] = {
         ...existingEntry,
-        title: todayWorkout.title, // Koristimo lep naziv aplikacije
-        km: existingEntry.km || numericKm, // Zadržavamo tačne Stravine metre ako ih ima
+        title: todayWorkout.title, 
+        km: existingEntry.km || numericKm, 
         status: 'done',
         desc: todayWorkout.desc,
-        week: todayWorkout.week, // Beležimo NJEGOV PRAVI ID, ne nužno kalendarsku nedelju!
+        week: todayWorkout.week, 
         dayIndex: todayWorkout.dayIndex, 
         date: new Date().toISOString()
       };
@@ -282,7 +288,6 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
   };
 
   const handleLoadNextWorkout = () => {
-    // Pametno nalazimo sledeci neodradjeni trening
     let nextWorkout = null;
     for (let i = todayWorkout.dayIndex + 1; i < 7; i++) {
       const checkW = masterPlan[todayWorkout.week][i];
@@ -384,44 +389,41 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           alignItems: 'center',
           width: '100%'
         }}>
+          {/* SADA SU DUGMIĆI UVEK VIDLJIVI BEZ OBZIRA NA ISTORIJU */}
           <div style={{ display: 'flex', gap: '6px' }}>
-            {!isCurrentlyDone && (
-              <>
-                <button
-                  onClick={() => handleAction('completed')}
-                  title="Označi kao urađeno"
-                  style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#22c55e', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(34, 197, 94, 0.6)' }}
-                />
-                <button
-                  onClick={() => handleAction('moved')}
-                  title="Pomeri trening"
-                  style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#f97316', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(249, 115, 22, 0.6)' }}
-                />
-                <button
-                  onClick={() => handleAction('skipped')}
-                  title="Preskoči"
-                  style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#ef4444', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(239, 68, 68, 0.6)' }}
-                />
-              </>
-            )}
+            <button
+              onClick={() => handleAction('completed')}
+              title="Označi kao urađeno"
+              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#22c55e', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(34, 197, 94, 0.6)' }}
+            />
+            <button
+              onClick={() => handleAction('moved')}
+              title="Pomeri trening"
+              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#f97316', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(249, 115, 22, 0.6)' }}
+            />
+            <button
+              onClick={() => handleAction('skipped')}
+              title="Preskoči"
+              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#ef4444', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(239, 68, 68, 0.6)' }}
+            />
           </div>
 
           <div style={{
             display: 'flex',
             alignItems: 'center',
             gap: '4px',
-            background: isCurrentlyDone ? 'rgba(59, 130, 246, 0.15)' : 'rgba(34, 197, 94, 0.15)',
-            border: `1px solid ${isCurrentlyDone ? 'rgba(59, 130, 246, 0.4)' : 'rgba(34, 197, 94, 0.4)'}`,
+            background: 'rgba(34, 197, 94, 0.15)',
+            border: '1px solid rgba(34, 197, 94, 0.4)',
             padding: '2px 8px',
             borderRadius: '20px',
             fontSize: '10px',
             fontWeight: '900',
-            color: isCurrentlyDone ? '#60a5fa' : '#4ade80',
+            color: '#4ade80',
             textTransform: 'uppercase',
             letterSpacing: '0.5px'
           }}>
-            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: isCurrentlyDone ? '#60a5fa' : '#4ade80', boxShadow: `0 0 8px ${isCurrentlyDone ? '#60a5fa' : '#4ade80'}` }}></div>
-            Nedelja {todayWorkout.week} - {todayWorkout.day || todayWorkout.dayName}
+            <div style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4ade80', boxShadow: '0 0 8px #4ade80' }}></div>
+            Nedelja {todayWorkout.week} - {todayWorkout.dayName}
           </div>
         </div>
 
@@ -468,7 +470,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           </div>
 
           <div style={{
-            background: isCurrentlyDone ? 'linear-gradient(135deg, #3b82f6, #2563eb)' : 'linear-gradient(135deg, #22c55e, #14b8a6)',
+            background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
             color: '#ffffff',
             padding: '8px 16px',
             borderRadius: '12px',
@@ -476,9 +478,9 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
             fontWeight: '900',
             textTransform: 'uppercase',
             letterSpacing: '0.5px',
-            boxShadow: `0 4px 15px ${isCurrentlyDone ? 'rgba(59, 130, 246, 0.3)' : 'rgba(34, 197, 94, 0.3)'}`
+            boxShadow: '0 4px 15px rgba(34, 197, 94, 0.3)'
           }}>
-            {isCurrentlyDone ? 'VEĆ ODRAĐENO ✔' : 'Aktivno'}
+            Aktivno
           </div>
         </div>
       </div>
