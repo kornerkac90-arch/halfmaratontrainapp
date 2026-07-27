@@ -1,8 +1,13 @@
 import React, { useState } from 'react';
 
 export default function TodayWorkout({ onBack, onUpdateStatus }) {
-  // Stanje za kontrolu prikaza i sadržaja custom modala umesto običnog alerta
-  const [modalInfo, setModalInfo] = useState({ isOpen: false, title: '', message: '', type: 'success' });
+  const [modalInfo, setModalInfo] = useState({ 
+    isOpen: false, 
+    title: '', 
+    message: '', 
+    type: 'success', 
+    showNextOptions: false 
+  });
 
   // Računamo tačan dan na osnovu razlike u datumima u odnosu na start 27.07.2026.
   const startDate = new Date('2026-07-27');
@@ -135,41 +140,98 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
     ]
   };
 
-  const todayWorkout = masterPlan[currentWeekNum][dayOfWeekIndex];
+  // Proveravamo da li postoji prebačen/naredni trening u memoriji, inače uzimamo današnji po planu
+  const savedMovedWorkout = localStorage.getItem('current_today_workout');
+  const forcedWorkout = savedMovedWorkout ? JSON.parse(savedMovedWorkout) : null;
+  const scheduledTodayWorkout = masterPlan[currentWeekNum] ? masterPlan[currentWeekNum][dayOfWeekIndex] : masterPlan[1][0];
+  const todayWorkout = forcedWorkout || scheduledTodayWorkout;
 
   const handleAction = (status) => {
-    if (status === 'moved' && dayOfWeekIndex === 6) {
+    if (status === 'moved' && dayOfWeekIndex === 6 && !forcedWorkout) {
       setModalInfo({
         isOpen: true,
         title: "Greška",
         message: "Nije moguće pomeriti trening jer je danas nedelja – prelazak u narednu nedelju nije dozvoljen!",
-        type: "error"
+        type: "error",
+        showNextOptions: false
       });
       return;
     }
 
-    // Postavljamo poruke za custom modal umesto alerta
+    const year = today.getFullYear();
+    const month = String(today.getMonth() + 1).padStart(2, '0');
+    const day = String(today.getDate()).padStart(2, '0');
+    const dateKey = `${year}-${month}-${day}`;
+
+    const existingHistory = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
+
     if (status === 'completed') {
+      const numericKm = parseFloat(todayWorkout.km) || 0;
+      existingHistory[dateKey] = {
+        title: todayWorkout.title,
+        km: numericKm,
+        status: 'done',
+        desc: todayWorkout.desc,
+        week: currentWeekNum,
+        dayIndex: dayOfWeekIndex,
+        date: new Date().toISOString()
+      };
+
+      localStorage.setItem('completed_workouts', JSON.stringify(existingHistory));
+      window.dispatchEvent(new Event('storage'));
+
+      // Otvaramo modal sa upitom da li želi naredni trening
       setModalInfo({
         isOpen: true,
         title: "Uspešno!",
-        message: "Bravo! Trening je uspešno označen kao urađen i upisan u statistiku! 🏅",
-        type: "success"
-      });
-    } else if (status === 'moved') {
-      setModalInfo({
-        isOpen: true,
-        title: "Pomereno",
-        message: "Trening je uspešno pomeren unutar tekuće nedelje. 🔄",
-        type: "warning"
+        message: "Bravo! Trening je uspešno označen kao urađen i upisan u istoriju. Da li želiš da učitaš naredni trening?",
+        type: "success",
+        showNextOptions: true
       });
     } else if (status === 'skipped') {
+      existingHistory[dateKey] = {
+        title: todayWorkout.title,
+        km: 0,
+        status: 'missed', // Crveno / Neuradjeno
+        desc: todayWorkout.desc,
+        week: currentWeekNum,
+        dayIndex: dayOfWeekIndex,
+        date: new Date().toISOString()
+      };
+
+      localStorage.setItem('completed_workouts', JSON.stringify(existingHistory));
+      window.dispatchEvent(new Event('storage'));
+
       setModalInfo({
         isOpen: true,
         title: "Preskočeno",
-        message: "Trening je zabeležen kao preskočen. Glavu gore, sutra je novi dan! 💪",
-        type: "info"
+        message: "Trening je zabeležen kao preskočen (neuradjen). Glavu gore, sutra je novi dan! 💪",
+        type: "info",
+        showNextOptions: false
       });
+    } else if (status === 'moved') {
+      const nextIndex = dayOfWeekIndex + 1;
+      if (nextIndex < 7) {
+        const nextWorkout = masterPlan[currentWeekNum][nextIndex];
+        localStorage.setItem('current_today_workout', JSON.stringify(nextWorkout));
+        
+        setModalInfo({
+          isOpen: true,
+          title: "Pomereno",
+          message: "Trening je uspešno pomeren za sutradan unutar tekuće nedelje! 🔄",
+          type: "warning",
+          showNextOptions: false
+        });
+      } else {
+        setModalInfo({
+          isOpen: true,
+          title: "Greška",
+          message: "Nije moguće pomeriti trening jer je već subota – sledeći dan prelazi u narednu nedelju!",
+          type: "error",
+          showNextOptions: false
+        });
+        return;
+      }
     }
 
     if (onUpdateStatus) {
@@ -182,8 +244,27 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
     }
   };
 
+  // Kada korisnik izabere "Da" za učitavanje narednog treninga
+  const handleLoadNextWorkout = () => {
+    const nextIndex = dayOfWeekIndex + 1;
+    if (nextIndex < 7) {
+      const nextWorkout = masterPlan[currentWeekNum][nextIndex];
+      localStorage.setItem('current_today_workout', JSON.stringify(nextWorkout));
+    }
+    setModalInfo({ ...modalInfo, isOpen: false });
+    onBack(); // Vraća nazad na home da se osveži prikaz
+  };
+
+  // Kada korisnik izabere "Ne"
+  const handleDeclineNextWorkout = () => {
+    localStorage.removeItem('current_today_workout');
+    setModalInfo({ ...modalInfo, isOpen: false });
+    onBack();
+  };
+
   const closeModal = () => {
     setModalInfo({ ...modalInfo, isOpen: false });
+    onBack();
   };
 
   return (
@@ -232,7 +313,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           textTransform: 'uppercase',
           letterSpacing: '1px'
         }}>
-          Dnevni pregled
+          Dnevni pregled {forcedWorkout ? '(Prebačen trening)' : ''}
         </div>
       </div>
 
@@ -280,7 +361,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
             />
             <button
               onClick={() => handleAction('moved')}
-              title="Pomeri trening (unutar tekuće nedelje)"
+              title="Pomeri trening za sutradan"
               style={{
                 width: '26px',
                 height: '26px',
@@ -296,7 +377,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
             />
             <button
               onClick={() => handleAction('skipped')}
-              title="Preskoči trening"
+              title="Preskoči trening (označi kao neuradjeno)"
               style={{
                 width: '26px',
                 height: '26px',
@@ -393,7 +474,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
         </div>
       </div>
 
-      {/* STILIZOVANI CUSTOM MODAL (POP-UP) U STILU APLIKACIJE */}
+      {/* STILIZOVANI CUSTOM MODAL (POP-UP) SA OPCIJAMA DA/NE */}
       {modalInfo.isOpen && (
         <div style={{
           position: 'fixed',
@@ -420,21 +501,8 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
             boxShadow: '0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(34, 197, 94, 0.2)',
             display: 'flex',
             flexDirection: 'column',
-            gap: '16px',
-            animation: 'scaleUp 0.2s ease-out'
+            gap: '16px'
           }}>
-            {/* Naziv aplikacije/sajta iznad poruke (slično kao na tvom skrinšotu) */}
-            <div style={{
-              fontSize: '11px',
-              fontWeight: '800',
-              color: '#9ca3af',
-              textTransform: 'lowercase',
-              letterSpacing: '0.5px'
-            }}>
-              
-            </div>
-
-            {/* Glavna poruka */}
             <div style={{
               fontSize: '14px',
               fontWeight: '600',
@@ -444,33 +512,66 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
               {modalInfo.message}
             </div>
 
-            {/* Dugme Potvrdi u donjem desnom uglu */}
             <div style={{
               display: 'flex',
               justifyContent: 'flex-end',
+              gap: '10px',
               marginTop: '4px'
             }}>
-              <button
-                onClick={closeModal}
-                style={{
-                  background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '12px',
-                  padding: '10px 22px',
-                  fontSize: '12px',
-                  fontWeight: '900',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(34, 197, 94, 0.35)',
-                  transition: 'transform 0.1s ease'
-                }}
-                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
-                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
-              >
-                Potvrdi
-              </button>
+              {modalInfo.showNextOptions ? (
+                <>
+                  <button
+                    onClick={handleDeclineNextWorkout}
+                    style={{
+                      background: '#374151',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '10px 16px',
+                      fontSize: '12px',
+                      fontWeight: 'bold',
+                      cursor: 'pointer'
+                    }}
+                  >
+                    Ne
+                  </button>
+                  <button
+                    onClick={handleLoadNextWorkout}
+                    style={{
+                      background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
+                      color: '#ffffff',
+                      border: 'none',
+                      borderRadius: '10px',
+                      padding: '10px 16px',
+                      fontSize: '12px',
+                      fontWeight: '900',
+                      cursor: 'pointer',
+                      boxShadow: '0 4px 15px rgba(34, 197, 94, 0.35)'
+                    }}
+                  >
+                    Da
+                  </button>
+                </>
+              ) : (
+                <button
+                  onClick={closeModal}
+                  style={{
+                    background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
+                    color: '#ffffff',
+                    border: 'none',
+                    borderRadius: '12px',
+                    padding: '10px 22px',
+                    fontSize: '12px',
+                    fontWeight: '900',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px',
+                    cursor: 'pointer',
+                    boxShadow: '0 4px 15px rgba(34, 197, 94, 0.35)'
+                  }}
+                >
+                  Potvrdi
+                </button>
+              )}
             </div>
           </div>
         </div>

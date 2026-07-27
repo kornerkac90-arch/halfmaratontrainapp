@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function TrainingPlan({ onBack }) {
   const [expandedWeek, setExpandedWeek] = useState(null);
+  const [completedWorkouts, setCompletedWorkouts] = useState({});
+
+  useEffect(() => {
+    const saved = localStorage.getItem('completed_workouts');
+    if (saved) {
+      setCompletedWorkouts(JSON.parse(saved));
+    }
+  }, []);
 
   // Funkcija koja svaku reč pretvara da počinje velikim slovom
   const capitalizeWords = (str) => {
@@ -10,6 +18,34 @@ export default function TrainingPlan({ onBack }) {
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
+  };
+
+  // Računamo tekuću nedelju na osnovu datuma 27.07.2026.
+  const startDate = new Date('2026-07-27');
+  const today = new Date();
+  today.setHours(0, 0, 0, 0);
+  startDate.setHours(0, 0, 0, 0);
+
+  const diffTime = today - startDate;
+  const diffDays = Math.floor(diffTime / (1000 * 60 * 60 * 24));
+
+  let currentActiveWeek = 1;
+  if (diffDays >= 0) {
+    currentActiveWeek = Math.floor(diffDays / 7) + 1;
+    if (currentActiveWeek > 12) currentActiveWeek = 12;
+  } else {
+    currentActiveWeek = 0; // Još nije počelo
+  }
+
+  // Funkcija koja računa koliko je treninga (sa statusom 'done') odrađeno u određenoj nedelji
+  const getWeeklyDoneCount = (weekNum) => {
+    let count = 0;
+    Object.values(completedWorkouts).forEach(item => {
+      if (item.week === weekNum && item.status === 'done') {
+        count++;
+      }
+    });
+    return count;
   };
 
   const weeks = [
@@ -174,7 +210,7 @@ export default function TrainingPlan({ onBack }) {
       details: [
         "PON: Odmor",
         "UTO: Odmor",
-        "SRI: Kratki intervali: 10 min zagrijavanje + 3 x 1000m (~6:30 min/km) uz 2 min pauze + 10 min rastrčavanje",
+        "SRI: Kratki intervali: 10 min zagrijavanje + 3 x 1000m (~6:30 min/km) uz 2 min lagane pauze + 10 min rastrčavanje",
         "ČET: Odmor",
         "PET: Odmor",
         "SUB (Dan prije): Lagani nadražaj: 5 km @ 7:20 min/km + 3 x 100m ubrzanja",
@@ -258,13 +294,39 @@ export default function TrainingPlan({ onBack }) {
       <div style={{
         display: 'flex',
         flexDirection: 'column',
-        gap: '8px',
-        maxHieght: 'none',
-        overflowY: 'visible',
-        paddingRight: '0px'
+        gap: '8px'
       }}>
         {weeks.map((w) => {
           const isExpanded = expandedWeek === w.week;
+          
+          // Računamo status nedelje
+          let statusText = "";
+          let statusStyle = {};
+          
+          if (w.week < currentActiveWeek) {
+            statusText = "Završeno";
+            statusStyle = { background: 'rgba(239, 68, 68, 0.15)', border: '1px solid rgba(239, 68, 68, 0.4)', color: '#f87171' };
+          } else if (w.week === currentActiveWeek) {
+            statusText = "U toku";
+            statusStyle = { background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.4)', color: '#4ade80' };
+          } else {
+            statusText = "U pripremi";
+            statusStyle = { background: 'rgba(156, 163, 175, 0.15)', border: '1px solid rgba(156, 163, 175, 0.4)', color: '#9ca3af' };
+          }
+
+          // Motivacija za završene nedelje na osnovu broja odrađenih treninga
+          let motivationMsg = "";
+          if (w.week < currentActiveWeek) {
+            const doneCount = getWeeklyDoneCount(w.week);
+            if (doneCount < 3) {
+              motivationMsg = "💡 Probaj bar 3 treninga!";
+            } else if (doneCount === 3) {
+              motivationMsg = "🔥 Super, 3 treninga odrađena!";
+            } else {
+              motivationMsg = "🌟 Fantastično, odličan ritam!";
+            }
+          }
+
           return (
             <div
               key={w.week}
@@ -287,15 +349,36 @@ export default function TrainingPlan({ onBack }) {
               }}
             >
               <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <span style={{
-                  fontSize: '12px',
-                  fontWeight: '900',
-                  color: '#ffffff',
-                  textTransform: 'uppercase',
-                  letterSpacing: '0.5px'
-                }}>
-                  Nedelja {w.week} {w.week === 1 ? '(Start: 27.07.)' : ''}
-                </span>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                  <span style={{
+                    fontSize: '12px',
+                    fontWeight: '900',
+                    color: '#ffffff',
+                    textTransform: 'uppercase',
+                    letterSpacing: '0.5px'
+                  }}>
+                    Nedelja {w.week}
+                  </span>
+                  {/* Status bedž sa tačkicom */}
+                  <span style={{
+                    ...statusStyle,
+                    padding: '2px 8px',
+                    borderRadius: '8px',
+                    fontSize: '10px',
+                    fontWeight: '900',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '4px',
+                    letterSpacing: '0.4px',
+                    textTransform: 'uppercase'
+                  }}>
+                    {w.week === currentActiveWeek && (
+                      <span style={{ width: '6px', height: '6px', borderRadius: '50%', backgroundColor: '#4ade80', boxShadow: '0 0 6px #4ade80' }}></span>
+                    )}
+                    {statusText}
+                  </span>
+                </div>
+
                 <span style={{
                   background: 'rgba(34, 197, 94, 0.15)',
                   border: '1px solid rgba(34, 197, 94, 0.3)',
@@ -309,6 +392,7 @@ export default function TrainingPlan({ onBack }) {
                   {capitalizeWords(w.total)}
                 </span>
               </div>
+
               <div style={{
                 fontSize: '12px',
                 color: '#4ade80',
@@ -317,6 +401,18 @@ export default function TrainingPlan({ onBack }) {
               }}>
                 {capitalizeWords(w.focus)}
               </div>
+
+              {/* Motivaciona poruka za završene nedelje */}
+              {motivationMsg && (
+                <div style={{
+                  fontSize: '10px',
+                  fontWeight: '800',
+                  color: '#fbbf24',
+                  marginTop: '2px'
+                }}>
+                  {motivationMsg}
+                </div>
+              )}
 
               {/* Detalji po danima koji se otvaraju na klik */}
               {isExpanded && (

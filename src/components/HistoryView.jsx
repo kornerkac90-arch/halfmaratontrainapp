@@ -1,7 +1,24 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 
 export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
-  // Funkcija koja svaku reč pretvara da počinje velikim slovom
+  const [historyData, setHistoryData] = useState(workoutHistory);
+
+  useEffect(() => {
+    const handleStorageChange = () => {
+      const saved = localStorage.getItem('completed_workouts');
+      if (saved) {
+        setHistoryData(JSON.parse(saved));
+      }
+    };
+
+    window.addEventListener('storage', handleStorageChange);
+    handleStorageChange();
+
+    return () => {
+      window.removeEventListener('storage', handleStorageChange);
+    };
+  }, []);
+
   const capitalizeWords = (str) => {
     if (!str) return '';
     return str
@@ -10,8 +27,12 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
       .join(' ');
   };
 
-  // Pretvaramo istoriju u niz i sortiramo opadajuće po datumu
-  const historyEntries = Object.entries(workoutHistory).sort((a, b) => new Date(b[0]) - new Date(a[0]));
+  // Filtriramo i sortiramo samo unose koji imaju validne datume da izbegnemo "Invalid Date"
+  const historyEntries = Object.entries(historyData || {}).filter(([dateStr]) => {
+    // Proveravamo da li je ključ validan datum (npr. YYYY-MM-DD ili da sadrži '-' / '/')
+    const d = new Date(dateStr);
+    return !isNaN(d.getTime());
+  }).sort((a, b) => new Date(b[0]) - new Date(a[0]));
 
   return (
     <div style={{
@@ -107,7 +128,6 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
       ) : (
         <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
           {historyEntries.map(([dateStr, data]) => {
-            // Formatiranje datuma u srpski format (npr. Pon, 27.7.2026.)
             const formattedDate = new Date(dateStr).toLocaleDateString('sr-RS', {
               day: 'numeric',
               month: 'numeric',
@@ -115,7 +135,7 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
               weekday: 'short'
             });
 
-            const isDone = data.status === 'done';
+            const isDone = data.status === 'done' || data.status === 'completed';
 
             return (
               <div key={dateStr} style={{
@@ -165,7 +185,7 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
                   letterSpacing: '0.5px',
                   whiteSpace: 'nowrap'
                 }}>
-                  {data.km ? `${data.km} km` : 'Odmor'}
+                  {data.km ? (String(data.km).includes('km') ? data.km : `${data.km} km`) : 'Odmor'}
                 </div>
               </div>
             );

@@ -12,6 +12,13 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
 
   const formattedMaratonName = capitalizeWords(maratonName || 'Ljubljanski polumaraton');
 
+  // Izračunavanje procenta napretka na osnovu pređenih i ukupnih kilometara
+  const parsedDone = parseFloat(doneKm) || 0;
+  const parsedTotal = parseFloat(totalKm) || 21.1; // Ukupno za polumaraton ili zadato
+  let percentage = parsedTotal > 0 ? (parsedDone / parsedTotal) * 100 : 0;
+  if (percentage > 100) percentage = 100;
+  if (percentage < 0) percentage = 0;
+
   return (
     <div style={{
       background: 'rgba(17, 24, 39, 0.75)',
@@ -52,13 +59,17 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
             strokeWidth="4"
             strokeLinecap="round"
           />
-          {/* Svetleća aktivna GPS ruta (možeš menjati dasharray ili boju) */}
+          {/* Aktivna GPS ruta koja se dinamički popunjava preko pathLength i strokeDasharray */}
           <path
             d="M 10 20 Q 50 5, 90 20 T 170 20 T 250 20 T 290 20"
             fill="none"
             stroke="url(#stravaGradient)"
             strokeWidth="5"
             strokeLinecap="round"
+            pathLength="100"
+            strokeDasharray="100"
+            strokeDashoffset={100 - percentage}
+            style={{ transition: 'stroke-dashoffset 0.5s ease-in-out' }}
             filter="drop-shadow(0px 0px 6px rgba(59, 130, 246, 0.6))"
           />
           {/* Gradient definicija */}
@@ -83,7 +94,7 @@ export default function ProgressBar({ doneKm, totalKm, maratonName, raceDate }) 
         marginTop: '2px'
       }}>
         <span>🎯 Start</span>
-        <span style={{ color: '#60a5fa' }}>0% pređeno</span>
+        <span style={{ color: '#60a5fa' }}>{percentage.toFixed(1)}% pređeno</span>
         <span>🏁 Cilj</span>
       </div>
     </div>

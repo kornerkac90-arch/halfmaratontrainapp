@@ -10,7 +10,7 @@ import HistoryView from './components/HistoryView';
 
 const STRAVA_CLIENT_ID = '267445';
 const STRAVA_CLIENT_SECRET = 'f1c6f100a8b9aa1989ef3aa281ccd8c1341e172d'; 
-const REDIRECT_URI = 'http://192.168.0.21:5173/';
+const REDIRECT_URI = 'https://halfmaratontrainapp.vercel.app/';
 
 export default function App() {
   const [currentDateStr, setCurrentDateStr] = useState('');
@@ -245,7 +245,7 @@ export default function App() {
     }
   };
 
-  const fetchAthleteActivities = async (token) => {
+ const fetchAthleteActivities = async (token) => {
     try {
       const response = await fetch(`https://www.strava.com/api/v3/athlete/activities?per_page=50`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -268,18 +268,36 @@ export default function App() {
               const distanceKm = Number((act.distance / 1000).toFixed(2));
               const durationSec = act.moving_time || 0;
 
+              // RAČUNANJE TEMPA (Pace u sekundama po kilometru)
+              let paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
+              if (distanceKm > 0 && durationSec > 0) {
+                const paceSecPerKm = durationSec / distanceKm;
+                
+                // Pretpostavljamo standardni lagani tempo iz plana oko 7:15 (435 sekundi) do 7:30 (450 sekundi)
+                // Ako je tempo brži od 6:50 (410s), znači da je prebrzo
+                // Ako je sporiji od 7:50 (470s), može brže
+                if (paceSecPerKm < 410) {
+                  paceFeedback = "Uspori malo! Krenuo si prebrzo u odnosu na plan. 🔴";
+                } else if (paceSecPerKm > 470) {
+                  paceFeedback = "Možeš malo brže! Drži planirani ritam. 🔵";
+                } else {
+                  paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
+                }
+              }
+
               newHistory[actDateStr] = {
                 title: act.name || "Trčanje sa Strave",
                 km: distanceKm,
                 seconds: durationSec,
-                status: 'done'
+                status: 'done',
+                feedback: paceFeedback // Pametna analiza ritma
               };
             }
           }
         });
 
         setWorkoutHistory(newHistory);
-        alert(`Uspešno sinhronizovano sa Stravom od 27.07.2026!`);
+        alert(`Uspešno sinhronizovano sa Stravom i analiziran ritam treninga!`);
       }
     } catch (error) {
       console.error("Greška pri preuzimanju sa Strave:", error);
