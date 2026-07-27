@@ -8,14 +8,18 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
       const saved = localStorage.getItem('completed_workouts');
       if (saved) {
         setHistoryData(JSON.parse(saved));
+      } else {
+        setHistoryData({});
       }
     };
 
     window.addEventListener('storage', handleStorageChange);
+    window.addEventListener('workout_updated', handleStorageChange);
     handleStorageChange();
 
     return () => {
       window.removeEventListener('storage', handleStorageChange);
+      window.removeEventListener('workout_updated', handleStorageChange);
     };
   }, []);
 
@@ -25,6 +29,21 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
       .split(' ')
       .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
       .join(' ');
+  };
+
+  // FUNKCIJA ZA BRISANJE
+  const handleDelete = (dateKey) => {
+    if (window.confirm('Da li sigurno želiš da obrišeš ovaj trening iz istorije? Urađeni kilometri će biti umanjeni.')) {
+      const saved = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
+      delete saved[dateKey]; // Brišemo unos za taj datum
+      
+      localStorage.setItem('completed_workouts', JSON.stringify(saved));
+      setHistoryData(saved); // Osvežavamo lokalni state
+      
+      // Obaveštavamo App.jsx da ponovo preračuna progres
+      window.dispatchEvent(new Event('storage'));
+      window.dispatchEvent(new Event('workout_updated'));
+    }
   };
 
   const historyEntries = Object.entries(historyData || {}).filter(([dateStr]) => {
@@ -60,14 +79,35 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
                   <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
                     <div style={{ fontSize: '11px', color: '#9ca3af', textTransform: 'capitalize', fontWeight: '700' }}>
                       {formattedDate} 
-                      {/* Mali indikator originalnog plana iz koje je nedelje! */}
                       {data.week && data.dayIndex !== undefined && <span style={{color: '#60a5fa', marginLeft: '6px'}}>(Nedelja {data.week})</span>}
                     </div>
-                    <div style={{ fontSize: '13px', fontWeight: '900', color: '#ffffff', letterSpacing: '0.3px' }}>{capitalizeWords(data.title)}</div>
+                    <div style={{ fontSize: '13px', fontWeight: '900', color: '#ffffff', letterSpacing: '0.3px', maxWidth: '180px', wordWrap: 'break-word' }}>{capitalizeWords(data.title)}</div>
                   </div>
                   
-                  <div style={{ background: isDone ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)', border: `1px solid ${isDone ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`, color: isDone ? '#4ade80' : '#f87171', padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '900' }}>
-                    {data.km ? (String(data.km).includes('km') ? data.km : `${data.km} km`) : 'Odmor'}
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <div style={{ background: isDone ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)', border: `1px solid ${isDone ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`, color: isDone ? '#4ade80' : '#f87171', padding: '4px 10px', borderRadius: '8px', fontSize: '11px', fontWeight: '900' }}>
+                      {data.km ? (String(data.km).includes('km') ? data.km : `${data.km} km`) : 'Odmor'}
+                    </div>
+                    {/* DUGME ZA BRISANJE */}
+                    <button 
+                      onClick={() => handleDelete(dateStr)}
+                      title="Obriši ovaj trening"
+                      style={{
+                        background: 'rgba(239, 68, 68, 0.15)',
+                        border: '1px solid rgba(239, 68, 68, 0.4)',
+                        color: '#f87171',
+                        borderRadius: '8px',
+                        width: '26px',
+                        height: '26px',
+                        display: 'flex',
+                        justifyContent: 'center',
+                        alignItems: 'center',
+                        cursor: 'pointer',
+                        fontSize: '12px'
+                      }}
+                    >
+                      ✕
+                    </button>
                   </div>
                 </div>
 
