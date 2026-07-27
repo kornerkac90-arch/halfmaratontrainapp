@@ -1,6 +1,9 @@
-import React from 'react';
+import React, { useState } from 'react';
 
 export default function TodayWorkout({ onBack, onUpdateStatus }) {
+  // Stanje za kontrolu prikaza i sadržaja custom modala umesto običnog alerta
+  const [modalInfo, setModalInfo] = useState({ isOpen: false, title: '', message: '', type: 'success' });
+
   // Računamo tačan dan na osnovu razlike u datumima u odnosu na start 27.07.2026.
   const startDate = new Date('2026-07-27');
   const today = new Date();
@@ -136,16 +139,37 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
 
   const handleAction = (status) => {
     if (status === 'moved' && dayOfWeekIndex === 6) {
-      alert("Greška: Nije moguće pomeriti trening jer je danas nedelja – prelazak u narednu nedelju nije dozvoljen!");
+      setModalInfo({
+        isOpen: true,
+        title: "Greška",
+        message: "Nije moguće pomeriti trening jer je danas nedelja – prelazak u narednu nedelju nije dozvoljen!",
+        type: "error"
+      });
       return;
     }
-    // Poruke za svako dugme
+
+    // Postavljamo poruke za custom modal umesto alerta
     if (status === 'completed') {
-      alert("Bravo! Trening je uspešno označen kao urađen i upisan u statistiku! 🏅");
+      setModalInfo({
+        isOpen: true,
+        title: "Uspešno!",
+        message: "Bravo! Trening je uspešno označen kao urađen i upisan u statistiku! 🏅",
+        type: "success"
+      });
     } else if (status === 'moved') {
-      alert("Trening je uspešno pomeren unutar tekuće nedelje. 🔄");
+      setModalInfo({
+        isOpen: true,
+        title: "Pomereno",
+        message: "Trening je uspešno pomeren unutar tekuće nedelje. 🔄",
+        type: "warning"
+      });
     } else if (status === 'skipped') {
-      alert("Trening je zabeležen kao preskočen. Glavu gore, sutra je novi dan! 💪");
+      setModalInfo({
+        isOpen: true,
+        title: "Preskočeno",
+        message: "Trening je zabeležen kao preskočen. Glavu gore, sutra je novi dan! 💪",
+        type: "info"
+      });
     }
 
     if (onUpdateStatus) {
@@ -158,13 +182,18 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
     }
   };
 
+  const closeModal = () => {
+    setModalInfo({ ...modalInfo, isOpen: false });
+  };
+
   return (
     <div style={{
       width: '100%',
       display: 'flex',
       flexDirection: 'column',
       gap: '12px',
-      boxSizing: 'border-box'
+      boxSizing: 'border-box',
+      position: 'relative'
     }}>
       {/* Top Bar / Nazad dugme */}
       <div style={{
@@ -231,7 +260,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           alignItems: 'center',
           width: '100%'
         }}>
-          {/* 3 dugmeta: Zeleno, Narandžasto, Crveno pomerena levo */}
+          {/* 3 dugmeta: Zeleno, Narandžasto, Crveno */}
           <div style={{ display: 'flex', gap: '6px' }}>
             <button
               onClick={() => handleAction('completed')}
@@ -363,6 +392,89 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           </div>
         </div>
       </div>
+
+      {/* STILIZOVANI CUSTOM MODAL (POP-UP) U STILU APLIKACIJE */}
+      {modalInfo.isOpen && (
+        <div style={{
+          position: 'fixed',
+          top: 0,
+          left: 0,
+          width: '100vw',
+          height: '100vh',
+          backgroundColor: 'rgba(0, 0, 0, 0.75)',
+          backdropFilter: 'blur(8px)',
+          display: 'flex',
+          justifyContent: 'center',
+          alignItems: 'center',
+          zIndex: 9999,
+          padding: '20px',
+          boxSizing: 'border-box'
+        }}>
+          <div style={{
+            backgroundColor: '#111827',
+            border: '1.5px solid rgba(34, 197, 94, 0.5)',
+            borderRadius: '24px',
+            padding: '24px 20px 20px 20px',
+            width: '100%',
+            maxWidth: '340px',
+            boxShadow: '0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(34, 197, 94, 0.2)',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '16px',
+            animation: 'scaleUp 0.2s ease-out'
+          }}>
+            {/* Naziv aplikacije/sajta iznad poruke (slično kao na tvom skrinšotu) */}
+            <div style={{
+              fontSize: '11px',
+              fontWeight: '800',
+              color: '#9ca3af',
+              textTransform: 'lowercase',
+              letterSpacing: '0.5px'
+            }}>
+              halfmaratontrainapp.vercel.app navodi:
+            </div>
+
+            {/* Glavna poruka */}
+            <div style={{
+              fontSize: '14px',
+              fontWeight: '600',
+              color: '#f3f4f6',
+              lineHeight: '1.5'
+            }}>
+              {modalInfo.message}
+            </div>
+
+            {/* Dugme Potvrdi u donjem desnom uglu */}
+            <div style={{
+              display: 'flex',
+              justifyContent: 'flex-end',
+              marginTop: '4px'
+            }}>
+              <button
+                onClick={closeModal}
+                style={{
+                  background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
+                  color: '#ffffff',
+                  border: 'none',
+                  borderRadius: '12px',
+                  padding: '10px 22px',
+                  fontSize: '12px',
+                  fontWeight: '900',
+                  textTransform: 'uppercase',
+                  letterSpacing: '0.5px',
+                  cursor: 'pointer',
+                  boxShadow: '0 4px 15px rgba(34, 197, 94, 0.35)',
+                  transition: 'transform 0.1s ease'
+                }}
+                onMouseEnter={(e) => e.currentTarget.style.transform = 'scale(1.05)'}
+                onMouseLeave={(e) => e.currentTarget.style.transform = 'scale(1)'}
+              >
+                Potvrdi
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
