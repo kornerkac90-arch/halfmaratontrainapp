@@ -277,6 +277,18 @@ export default function App() {
             if (actDate >= planStartDate) {
               const distanceKm = Number((act.distance / 1000).toFixed(2));
               const durationSec = act.moving_time || 0;
+              const avgSpeed = act.average_speed || 0; // Strava vraća metre po sekundi
+              const heartRate = act.has_heartrate ? Math.round(act.average_heartrate) : null;
+              const elevation = act.total_elevation_gain ? Math.round(act.total_elevation_gain) : 0;
+
+              // Računanje PACE-a (min/km)
+              let paceStr = "--:--";
+              if (avgSpeed > 0) {
+                const paceMinsDecimal = 1000 / (avgSpeed * 60);
+                const pMins = Math.floor(paceMinsDecimal);
+                const pSecs = Math.round((paceMinsDecimal - pMins) * 60);
+                paceStr = `${pMins}:${pSecs < 10 ? '0' : ''}${pSecs}`;
+              }
 
               let paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
               if (distanceKm > 0 && durationSec > 0) {
@@ -288,7 +300,6 @@ export default function App() {
                 }
               }
 
-              // PAMETNO SPAJANJE: Ne gazimo ako već postoji lep naslov (ili week/dayIndex)!
               const existingAppEntry = newHistory[actDateStr] || {};
               const titleToKeep = (existingAppEntry.title && !existingAppEntry.title.includes('Strava')) 
                                   ? existingAppEntry.title 
@@ -299,8 +310,12 @@ export default function App() {
                 title: titleToKeep,
                 km: distanceKm,
                 seconds: durationSec,
+                pace: paceStr,           // NOVO
+                hr: heartRate,           // NOVO
+                elevation: elevation,    // NOVO
                 status: 'done',
-                feedback: paceFeedback
+                feedback: paceFeedback,
+                isStrava: true           // Znak da imamo detaljne pro podatke
               };
             }
           }
@@ -308,7 +323,7 @@ export default function App() {
 
         setWorkoutHistory(newHistory);
         localStorage.setItem('completed_workouts', JSON.stringify(newHistory));
-        alert(`Uspešno sinhronizovano sa Stravom i sačuvano u istoriji!`);
+        alert(`Uspešno sinhronizovano sa Stravom! Proširena analitika je dostupna u arhivi.`);
       }
     } catch (error) {
       console.error("Greška pri preuzimanju sa Strave:", error);
