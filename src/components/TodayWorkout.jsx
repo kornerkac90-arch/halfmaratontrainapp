@@ -431,7 +431,7 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
               textTransform: 'lowercase',
               letterSpacing: '0.5px'
             }}>
-              halfmaratontrainapp.vercel.app navodi:
+              
             </div>
 
             {/* Glavna poruka */}
