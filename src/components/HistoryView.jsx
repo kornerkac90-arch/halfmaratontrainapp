@@ -29,7 +29,6 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
 
   // Filtriramo i sortiramo samo unose koji imaju validne datume da izbegnemo "Invalid Date"
   const historyEntries = Object.entries(historyData || {}).filter(([dateStr]) => {
-    // Proveravamo da li je ključ validan datum (npr. YYYY-MM-DD ili da sadrži '-' / '/')
     const d = new Date(dateStr);
     return !isNaN(d.getTime());
   }).sort((a, b) => new Date(b[0]) - new Date(a[0]));
@@ -147,46 +146,66 @@ export default function HistoryView({ onBack, workoutHistory, masterPlan }) {
                 borderRadius: '14px',
                 padding: '12px 14px',
                 display: 'flex',
-                justifyContent: 'space-between',
-                alignItems: 'center',
+                flexDirection: 'column',
+                gap: '8px',
                 boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
                 boxSizing: 'border-box',
                 transition: 'all 0.2s ease'
               }}>
-                <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', gap: '2px' }}>
+                    <div style={{
+                      fontSize: '11px',
+                      color: '#9ca3af',
+                      textTransform: 'capitalize',
+                      fontWeight: '700',
+                      letterSpacing: '0.3px'
+                    }}>
+                      {formattedDate}
+                    </div>
+                    <div style={{
+                      fontSize: '13px',
+                      fontWeight: '900',
+                      color: '#ffffff',
+                      letterSpacing: '0.3px'
+                    }}>
+                      {capitalizeWords(data.title)}
+                    </div>
+                  </div>
+                  
+                  <div style={{
+                    background: isDone ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
+                    border: `1px solid ${isDone ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
+                    color: isDone ? '#4ade80' : '#f87171',
+                    padding: '4px 10px',
+                    borderRadius: '8px',
+                    fontSize: '11px',
+                    fontWeight: '900',
+                    textAlign: 'center',
+                    letterSpacing: '0.5px',
+                    whiteSpace: 'nowrap'
+                  }}>
+                    {data.km ? (String(data.km).includes('km') ? data.km : `${data.km} km`) : 'Odmor'}
+                  </div>
+                </div>
+
+                {/* PAMETNA ANALIZA RITMA SA STRAVE */}
+                {data.feedback && (
                   <div style={{
                     fontSize: '11px',
-                    color: '#9ca3af',
-                    textTransform: 'capitalize',
-                    fontWeight: '700',
-                    letterSpacing: '0.3px'
+                    fontWeight: '800',
+                    color: data.feedback.includes('🟢') ? '#4ade80' : data.feedback.includes('🔴') ? '#f87171' : '#60a5fa',
+                    background: 'rgba(31, 41, 55, 0.6)',
+                    padding: '6px 10px',
+                    borderRadius: '8px',
+                    border: '1px solid rgba(255, 255, 255, 0.05)',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '6px'
                   }}>
-                    {formattedDate}
+                    {data.feedback}
                   </div>
-                  <div style={{
-                    fontSize: '13px',
-                    fontWeight: '900',
-                    color: '#ffffff',
-                    letterSpacing: '0.3px'
-                  }}>
-                    {capitalizeWords(data.title)}
-                  </div>
-                </div>
-                
-                <div style={{
-                  background: isDone ? 'rgba(34, 197, 94, 0.15)' : 'rgba(239, 68, 68, 0.15)',
-                  border: `1px solid ${isDone ? 'rgba(34, 197, 94, 0.4)' : 'rgba(239, 68, 68, 0.4)'}`,
-                  color: isDone ? '#4ade80' : '#f87171',
-                  padding: '4px 10px',
-                  borderRadius: '8px',
-                  fontSize: '11px',
-                  fontWeight: '900',
-                  textAlign: 'center',
-                  letterSpacing: '0.5px',
-                  whiteSpace: 'nowrap'
-                }}>
-                  {data.km ? (String(data.km).includes('km') ? data.km : `${data.km} km`) : 'Odmor'}
-                </div>
+                )}
               </div>
             );
           })}
