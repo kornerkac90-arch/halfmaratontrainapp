@@ -164,12 +164,18 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
     const dateKey = `${year}-${month}-${day}`;
 
     const existingHistory = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
+    
+    // NOVO: Dohvatamo stari objekat iz istorije ako on vec postoji (npr. Strava ga vec kreirala)
+    const existingEntry = existingHistory[dateKey] || {};
 
     if (status === 'completed') {
       const numericKm = parseFloat(todayWorkout.km) || 0;
+      
+      // NOVO: Zadržavamo Stravinu analizu, ali prepisujemo status u done
       existingHistory[dateKey] = {
-        title: todayWorkout.title,
-        km: numericKm,
+        ...existingEntry,
+        title: existingEntry.title || todayWorkout.title, // Zadrži Strava ime ako ga ima, inače uzmi iz plana
+        km: existingEntry.km || numericKm, // Zadrži tačne metre sa Strave ako ih ima
         status: 'done',
         desc: todayWorkout.desc,
         week: currentWeekNum,
@@ -190,7 +196,8 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
       });
     } else if (status === 'skipped') {
       existingHistory[dateKey] = {
-        title: todayWorkout.title,
+        ...existingEntry,
+        title: existingEntry.title || todayWorkout.title,
         km: 0,
         status: 'missed', // Crveno / Neuradjeno
         desc: todayWorkout.desc,
