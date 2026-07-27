@@ -23,7 +23,6 @@ export default function App() {
     return localStorage.getItem('local_user_avatar') || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face";
   });
   
-  // POPRAVLJENO: Sada glavni fajl čita isti ključ kao i rucni unos!
   const [workoutHistory, setWorkoutHistory] = useState(() => {
     const saved = localStorage.getItem('completed_workouts');
     return saved ? JSON.parse(saved) : {};
@@ -206,7 +205,6 @@ export default function App() {
 
   }, [trainingPlan]); 
 
-  // DODATO: Ovo sluša da li si kliknuo "Završi" u današnjem treningu i odmah osvežava kilometre
   useEffect(() => {
     const syncStorage = () => {
       const saved = localStorage.getItem('completed_workouts');
@@ -216,7 +214,7 @@ export default function App() {
     };
     
     window.addEventListener('storage', syncStorage);
-    window.addEventListener('workout_updated', syncStorage); // Custom event
+    window.addEventListener('workout_updated', syncStorage);
     
     return () => {
       window.removeEventListener('storage', syncStorage);
@@ -264,7 +262,6 @@ export default function App() {
       const activities = await response.json();
 
       if (Array.isArray(activities)) {
-        // Sada pouzdano čitamo šta god da je već sačuvano i dodajemo na to
         const existingSaved = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
         let newHistory = { ...existingSaved };
 
@@ -291,8 +288,15 @@ export default function App() {
                 }
               }
 
+              // PAMETNO SPAJANJE: Ne gazimo ako već postoji lep naslov (ili week/dayIndex)!
+              const existingAppEntry = newHistory[actDateStr] || {};
+              const titleToKeep = (existingAppEntry.title && !existingAppEntry.title.includes('Strava')) 
+                                  ? existingAppEntry.title 
+                                  : (act.name || "Trčanje sa Strave");
+
               newHistory[actDateStr] = {
-                title: act.name || "Trčanje sa Strave",
+                ...existingAppEntry,
+                title: titleToKeep,
                 km: distanceKm,
                 seconds: durationSec,
                 status: 'done',
@@ -311,7 +315,6 @@ export default function App() {
     }
   };
 
-  // POPRAVLJENO: Sada glavni fajl čuva promene u isti ključ
   useEffect(() => {
     localStorage.setItem('completed_workouts', JSON.stringify(workoutHistory));
   }, [workoutHistory]);

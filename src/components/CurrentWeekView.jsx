@@ -3,16 +3,11 @@ import React, { useState } from 'react';
 export default function CurrentWeekView({ onBack }) {
   const [modalInfo, setModalInfo] = useState({ isOpen: false, title: '', message: '', workoutToSet: null });
 
-  // Funkcija koja svaku reč pretvara da počinje velikim slovom
   const capitalizeWords = (str) => {
     if (!str) return '';
-    return str
-      .split(' ')
-      .map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase())
-      .join(' ');
+    return str.split(' ').map(word => word.charAt(0).toUpperCase() + word.slice(1).toLowerCase()).join(' ');
   };
 
-  // Izračunavanje tekuće nedelje na osnovu datuma 27.07.2026.
   const startDate = new Date('2026-07-27');
   const today = new Date();
   today.setHours(0, 0, 0, 0);
@@ -27,8 +22,7 @@ export default function CurrentWeekView({ onBack }) {
     if (currentWeekNum > 12) currentWeekNum = 12;
   }
 
-  // Master plan baza podataka
-  const masterPlan = {
+  const rawMasterPlan = {
     1: [
       { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km" },
       { dayName: "Utorak", title: "Lagano trčanje + Snaga", desc: "Lagano trčanje 5 km @ 7:15 min/km + Trening snage 1", km: "5 km" },
@@ -139,25 +133,27 @@ export default function CurrentWeekView({ onBack }) {
     ]
   };
 
-  const weekDays = masterPlan[currentWeekNum] || [];
+  const weekDays = rawMasterPlan[currentWeekNum] || [];
 
-  // Funkcija za prebacivanje izabranog treninga u današnji
   const handleMoveToToday = (workout, dayIndex) => {
-    const history = JSON.parse(localStorage.getItem('completed_workouts') || {});
-    // Proveravamo da li već postoji u istoriji pod ovim danom/nedeljom ili slično
-    const historyKey = `w${currentWeekNum}_d${dayIndex}`;
-    const isAlreadyDone = history[historyKey] && history[historyKey].status === 'done';
+    const historyVals = Object.values(JSON.parse(localStorage.getItem('completed_workouts') || '{}'));
+    
+    // Proveravamo striktno po ID-ju (nedelja + danIndex)
+    const isAlreadyDone = historyVals.some(h => h.week === currentWeekNum && h.dayIndex === dayIndex && h.status === 'done');
+
+    // Učitavamo ID-jeve u izabrani trening pre snimanja
+    const workoutWithId = { ...workout, week: currentWeekNum, dayIndex: dayIndex };
 
     if (isAlreadyDone) {
       setModalInfo({
         isOpen: true,
         title: "Već odrađeno",
         message: `Trening "${workout.title}" (${workout.dayName}) je već zabeležen kao odrađen u istoriji. Da li želiš da ga ponovo postaviš kao današnji trening i ponoviš ga?`,
-        workoutToSet: workout
+        workoutToSet: workoutWithId
       });
     } else {
-      localStorage.setItem('current_today_workout', JSON.stringify(workout));
-      onBack(); // Vraća na home
+      localStorage.setItem('current_today_workout', JSON.stringify(workoutWithId));
+      onBack();
     }
   };
 
@@ -170,234 +166,40 @@ export default function CurrentWeekView({ onBack }) {
   };
 
   return (
-    <div style={{
-      width: '100%',
-      display: 'flex',
-      flexDirection: 'column',
-      gap: '12px',
-      boxSizing: 'border-box',
-      position: 'relative'
-    }}>
-      {/* Top Bar / Nazad dugme */}
-      <div style={{
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'space-between',
-        marginBottom: '2px'
-      }}>
-        <button
-          onClick={onBack}
-          style={{
-            background: 'rgba(31, 41, 55, 0.7)',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.15)',
-            color: '#ffffff',
-            borderRadius: '12px',
-            padding: '8px 14px',
-            fontSize: '12px',
-            fontWeight: '800',
-            cursor: 'pointer',
-            display: 'flex',
-            alignItems: 'center',
-            gap: '6px',
-            boxShadow: '0 4px 12px rgba(0,0,0,0.2)',
-            transition: 'all 0.2s ease'
-          }}
-          onMouseEnter={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.4)'}
-          onMouseLeave={(e) => e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.15)'}
-        >
-          ← Nazad na tablu
-        </button>
-        <div style={{
-          fontSize: '11px',
-          fontWeight: '900',
-          color: '#9ca3af',
-          textTransform: 'uppercase',
-          letterSpacing: '1px'
-        }}>
-          Nedeljni pregled
-        </div>
+    <div style={{ width: '100%', display: 'flex', flexDirection: 'column', gap: '12px', boxSizing: 'border-box', position: 'relative' }}>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '2px' }}>
+        <button onClick={onBack} style={{ background: 'rgba(31, 41, 55, 0.7)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.15)', color: '#ffffff', borderRadius: '12px', padding: '8px 14px', fontSize: '12px', fontWeight: '800', cursor: 'pointer', display: 'flex', alignItems: 'center', gap: '6px', boxShadow: '0 4px 12px rgba(0,0,0,0.2)' }}>← Nazad na tablu</button>
+        <div style={{ fontSize: '11px', fontWeight: '900', color: '#9ca3af', textTransform: 'uppercase', letterSpacing: '1px' }}>Nedeljni pregled</div>
       </div>
 
-      {/* Zaglavlje sekcije */}
       <div style={{ marginBottom: '4px' }}>
-        <h2 style={{
-          fontSize: '18px',
-          fontWeight: '900',
-          color: '#ffffff',
-          textTransform: 'uppercase',
-          letterSpacing: '0.8px',
-          marginBottom: '4px',
-          textShadow: '0 0 10px rgba(34, 197, 94, 0.4)'
-        }}>
-          Trenutna nedelja {currentWeekNum}
-        </h2>
-        <p style={{
-          fontSize: '11px',
-          color: '#9ca3af',
-          fontWeight: '500'
-        }}>
-          Kalendarski prikaz treninga. Klikom na "Prebaci u danas" možeš izabrati željeni trening za danas.
-        </p>
+        <h2 style={{ fontSize: '18px', fontWeight: '900', color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.8px', marginBottom: '4px', textShadow: '0 0 10px rgba(34, 197, 94, 0.4)' }}>Trenutna nedelja {currentWeekNum}</h2>
+        <p style={{ fontSize: '11px', color: '#9ca3af', fontWeight: '500' }}>Kalendarski prikaz treninga. Klikom na "Prebaci u danas" biraš željeni trening.</p>
       </div>
 
-      {/* Lista dana */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         {weekDays.map((item, index) => (
-          <div key={index} style={{
-            backgroundImage: `linear-gradient(rgba(17, 24, 39, 0.88), rgba(17, 24, 39, 0.94)), url('/trenutnanedelja.jpg')`,
-            backgroundSize: 'cover',
-            backgroundPosition: 'center',
-            backdropFilter: 'blur(10px)',
-            border: '1px solid rgba(255, 255, 255, 0.1)',
-            borderRadius: '14px',
-            padding: '10px 14px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '6px',
-            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)',
-            boxSizing: 'border-box'
-          }}>
+          <div key={index} style={{ backgroundImage: `linear-gradient(rgba(17, 24, 39, 0.88), rgba(17, 24, 39, 0.94)), url('/trenutnanedelja.jpg')`, backgroundSize: 'cover', backgroundPosition: 'center', backdropFilter: 'blur(10px)', border: '1px solid rgba(255, 255, 255, 0.1)', borderRadius: '14px', padding: '10px 14px', display: 'flex', flexDirection: 'column', gap: '6px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.3)' }}>
             <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-              <span style={{
-                fontSize: '11px',
-                fontWeight: '900',
-                color: '#4ade80',
-                textTransform: 'uppercase',
-                letterSpacing: '0.5px'
-              }}>
-                {capitalizeWords(item.dayName)}
-              </span>
+              <span style={{ fontSize: '11px', fontWeight: '900', color: '#4ade80', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{capitalizeWords(item.dayName)}</span>
               <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
-                <span style={{
-                  background: 'rgba(34, 197, 94, 0.15)',
-                  border: '1px solid rgba(34, 197, 94, 0.3)',
-                  color: '#4ade80',
-                  padding: '2px 8px',
-                  borderRadius: '8px',
-                  fontSize: '10px',
-                  fontWeight: '900',
-                  letterSpacing: '0.5px'
-                }}>
-                  {item.km}
-                </span>
-                <button
-                  onClick={() => handleMoveToToday(item, index)}
-                  style={{
-                    background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
-                    color: '#ffffff',
-                    border: 'none',
-                    borderRadius: '8px',
-                    padding: '4px 8px',
-                    fontSize: '9px',
-                    fontWeight: '900',
-                    cursor: 'pointer',
-                    textTransform: 'uppercase',
-                    boxShadow: '0 2px 8px rgba(34, 197, 94, 0.3)'
-                  }}
-                  title="Postavi ovaj trening kao današnji"
-                >
-                  Prebaci u danas
-                </button>
+                <span style={{ background: 'rgba(34, 197, 94, 0.15)', border: '1px solid rgba(34, 197, 94, 0.3)', color: '#4ade80', padding: '2px 8px', borderRadius: '8px', fontSize: '10px', fontWeight: '900' }}>{item.km}</span>
+                <button onClick={() => handleMoveToToday(item, index)} style={{ background: 'linear-gradient(135deg, #22c55e, #14b8a6)', color: '#ffffff', border: 'none', borderRadius: '8px', padding: '4px 8px', fontSize: '9px', fontWeight: '900', cursor: 'pointer', textTransform: 'uppercase' }} title="Postavi kao današnji">Prebaci u danas</button>
               </div>
             </div>
-            <div style={{
-              fontSize: '14px',
-              fontWeight: '900',
-              color: '#ffffff',
-              textTransform: 'uppercase',
-              letterSpacing: '0.5px',
-              textShadow: '0 0 8px rgba(34, 197, 94, 0.3)'
-            }}>
-              {capitalizeWords(item.title)}
-            </div>
-            <div style={{
-              fontSize: '11px',
-              color: '#cbd5e1',
-              lineHeight: '1.4',
-              fontWeight: '500'
-            }}>
-              {capitalizeWords(item.desc)}
-            </div>
+            <div style={{ fontSize: '14px', fontWeight: '900', color: '#ffffff', textTransform: 'uppercase', letterSpacing: '0.5px' }}>{capitalizeWords(item.title)}</div>
+            <div style={{ fontSize: '11px', color: '#cbd5e1', lineHeight: '1.4', fontWeight: '500' }}>{capitalizeWords(item.desc)}</div>
           </div>
         ))}
       </div>
 
-      {/* MODAL ZA VEC ODRADJEN TRENING */}
       {modalInfo.isOpen && (
-        <div style={{
-          position: 'fixed',
-          top: 0,
-          left: 0,
-          width: '100vw',
-          height: '100vh',
-          backgroundColor: 'rgba(0, 0, 0, 0.75)',
-          backdropFilter: 'blur(8px)',
-          display: 'flex',
-          justifyContent: 'center',
-          alignItems: 'center',
-          zIndex: 9999,
-          padding: '20px',
-          boxSizing: 'border-box'
-        }}>
-          <div style={{
-            backgroundColor: '#111827',
-            border: '1.5px solid rgba(34, 197, 94, 0.5)',
-            borderRadius: '24px',
-            padding: '24px 20px 20px 20px',
-            width: '100%',
-            maxWidth: '340px',
-            boxShadow: '0 20px 40px rgba(0,0,0,0.6), 0 0 25px rgba(34, 197, 94, 0.2)',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '16px'
-          }}>
-            <div style={{
-              fontSize: '14px',
-              fontWeight: '600',
-              color: '#f3f4f6',
-              lineHeight: '1.5'
-            }}>
-              {modalInfo.message}
-            </div>
-
-            <div style={{
-              display: 'flex',
-              justifyContent: 'flex-end',
-              gap: '10px',
-              marginTop: '4px'
-            }}>
-              <button
-                onClick={() => setModalInfo({ isOpen: false, title: '', message: '', workoutToSet: null })}
-                style={{
-                  background: '#374151',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '10px 16px',
-                  fontSize: '12px',
-                  fontWeight: 'bold',
-                  cursor: 'pointer'
-                }}
-              >
-                Otkaži
-              </button>
-              <button
-                onClick={confirmRepeatWorkout}
-                style={{
-                  background: 'linear-gradient(135deg, #22c55e, #14b8a6)',
-                  color: '#ffffff',
-                  border: 'none',
-                  borderRadius: '10px',
-                  padding: '10px 16px',
-                  fontSize: '12px',
-                  fontWeight: '900',
-                  cursor: 'pointer',
-                  boxShadow: '0 4px 15px rgba(34, 197, 94, 0.35)'
-                }}
-              >
-                Da, ponovi
-              </button>
+        <div style={{ position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh', backgroundColor: 'rgba(0, 0, 0, 0.75)', backdropFilter: 'blur(8px)', display: 'flex', justifyContent: 'center', alignItems: 'center', zIndex: 9999, padding: '20px' }}>
+          <div style={{ backgroundColor: '#111827', border: '1.5px solid rgba(34, 197, 94, 0.5)', borderRadius: '24px', padding: '24px 20px 20px 20px', width: '100%', maxWidth: '340px', display: 'flex', flexDirection: 'column', gap: '16px' }}>
+            <div style={{ fontSize: '14px', fontWeight: '600', color: '#f3f4f6', lineHeight: '1.5' }}>{modalInfo.message}</div>
+            <div style={{ display: 'flex', justifyContent: 'flex-end', gap: '10px', marginTop: '4px' }}>
+              <button onClick={() => setModalInfo({ isOpen: false, title: '', message: '', workoutToSet: null })} style={{ background: '#374151', color: '#ffffff', border: 'none', borderRadius: '10px', padding: '10px 16px', fontSize: '12px', fontWeight: 'bold', cursor: 'pointer' }}>Otkaži</button>
+              <button onClick={confirmRepeatWorkout} style={{ background: 'linear-gradient(135deg, #22c55e, #14b8a6)', color: '#ffffff', border: 'none', borderRadius: '10px', padding: '10px 16px', fontSize: '12px', fontWeight: '900', cursor: 'pointer' }}>Da, ponovi</button>
             </div>
           </div>
         </div>
