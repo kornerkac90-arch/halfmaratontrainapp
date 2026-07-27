@@ -19,27 +19,24 @@ export default function App() {
   const [isStarted, setIsStarted] = useState(false);
   const [todayWorkoutData, setTodayWorkoutData] = useState({ title: "Odmor", desc: "Odmor", km: "0 km", targetKm: 0, dayName: "Ponedeljak" });
   
-  
-  // State za lokalnu sliku profila sa čuvanjem u localStorage
   const [userAvatar, setUserAvatar] = useState(() => {
     return localStorage.getItem('local_user_avatar') || "https://images.unsplash.com/photo-1534528741775-53994a69daeb?w=100&h=100&fit=crop&crop=face";
   });
   
+  // POPRAVLJENO: Sada glavni fajl čita isti ključ kao i rucni unos!
   const [workoutHistory, setWorkoutHistory] = useState(() => {
-    const saved = localStorage.getItem('maraton_workout_history');
+    const saved = localStorage.getItem('completed_workouts');
     return saved ? JSON.parse(saved) : {};
   });
 
   const [activeScreen, setActiveScreen] = useState('home');
 
-  // NOVO: Inicijalizacija master plana u localStorage-u (Korak 1)
   const [trainingPlan, setTrainingPlan] = useState(() => {
     const savedPlan = localStorage.getItem('marathon_training_plan_v2');
     if (savedPlan) {
       return JSON.parse(savedPlan);
     }
     
-    // Ako nema sačuvanog plana, koristimo tvoj originalni master plan
     const initialPlan = {
       1: [
         { dayName: "Ponedeljak", title: "Odmor", desc: "Odmor", km: "0 km", targetKm: 0 },
@@ -153,12 +150,10 @@ export default function App() {
     return initialPlan;
   });
 
-  // NOVO: Efekat za čuvanje master plana pri svakoj promeni
   useEffect(() => {
     localStorage.setItem('marathon_training_plan_v2', JSON.stringify(trainingPlan));
   }, [trainingPlan]);
 
-  // Funkcija za čitanje izabrane slike sa telefona/računara
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -200,10 +195,8 @@ export default function App() {
     }
 
     setCalculatedWeek(weekNum);
-    // KORISTIMO ZAMENJENI STANJE PLAN
     setTodayWorkoutData(trainingPlan[weekNum][dayIndex]);
 
-    // Provera povratka sa Strave preko URL koda
     const urlParams = new URLSearchParams(window.location.search);
     const authorizationCode = urlParams.get('code');
 
@@ -211,7 +204,25 @@ export default function App() {
       exchangeCodeForToken(authorizationCode);
     }
 
-  }, [trainingPlan]); // Dodali smo trainingPlan kao zavisnost
+  }, [trainingPlan]); 
+
+  // DODATO: Ovo sluša da li si kliknuo "Završi" u današnjem treningu i odmah osvežava kilometre
+  useEffect(() => {
+    const syncStorage = () => {
+      const saved = localStorage.getItem('completed_workouts');
+      if (saved) {
+        setWorkoutHistory(JSON.parse(saved));
+      }
+    };
+    
+    window.addEventListener('storage', syncStorage);
+    window.addEventListener('workout_updated', syncStorage); // Custom event
+    
+    return () => {
+      window.removeEventListener('storage', syncStorage);
+      window.removeEventListener('workout_updated', syncStorage);
+    };
+  }, []);
 
   const connectToStrava = () => {
     const authUrl = `https://www.strava.com/oauth/authorize?client_id=${STRAVA_CLIENT_ID}&response_type=code&redirect_uri=${encodeURIComponent(REDIRECT_URI)}&approval_prompt=force&scope=activity:read_all`;
@@ -245,7 +256,7 @@ export default function App() {
     }
   };
 
- const fetchAthleteActivities = async (token) => {
+  const fetchAthleteActivities = async (token) => {
     try {
       const response = await fetch(`https://www.strava.com/api/v3/athlete/activities?per_page=50`, {
         headers: { 'Authorization': `Bearer ${token}` }
@@ -253,7 +264,10 @@ export default function App() {
       const activities = await response.json();
 
       if (Array.isArray(activities)) {
-        let newHistory = {};
+        // Sada pouzdano čitamo šta god da je već sačuvano i dodajemo na to
+        const existingSaved = JSON.parse(localStorage.getItem('completed_workouts') || '{}');
+        let newHistory = { ...existingSaved };
+
         const planStartDate = new Date('2026-07-27');
         planStartDate.setHours(0, 0, 0, 0);
 
@@ -263,25 +277,17 @@ export default function App() {
             const actDate = new Date(actDateStr);
             actDate.setHours(0, 0, 0, 0);
 
-            // Učitavamo samo ako je aktivnost od 27.07.2026. pa na dalje
             if (actDate >= planStartDate) {
               const distanceKm = Number((act.distance / 1000).toFixed(2));
               const durationSec = act.moving_time || 0;
 
-              // RAČUNANJE TEMPA (Pace u sekundama po kilometru)
               let paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
               if (distanceKm > 0 && durationSec > 0) {
                 const paceSecPerKm = durationSec / distanceKm;
-                
-                // Pretpostavljamo standardni lagani tempo iz plana oko 7:15 (435 sekundi) do 7:30 (450 sekundi)
-                // Ako je tempo brži od 6:50 (410s), znači da je prebrzo
-                // Ako je sporiji od 7:50 (470s), može brže
                 if (paceSecPerKm < 410) {
                   paceFeedback = "Uspori malo! Krenuo si prebrzo u odnosu na plan. 🔴";
                 } else if (paceSecPerKm > 470) {
                   paceFeedback = "Možeš malo brže! Drži planirani ritam. 🔵";
-                } else {
-                  paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
                 }
               }
 
@@ -290,22 +296,24 @@ export default function App() {
                 km: distanceKm,
                 seconds: durationSec,
                 status: 'done',
-                feedback: paceFeedback // Pametna analiza ritma
+                feedback: paceFeedback
               };
             }
           }
         });
 
         setWorkoutHistory(newHistory);
-        alert(`Uspešno sinhronizovano sa Stravom i analiziran ritam treninga!`);
+        localStorage.setItem('completed_workouts', JSON.stringify(newHistory));
+        alert(`Uspešno sinhronizovano sa Stravom i sačuvano u istoriji!`);
       }
     } catch (error) {
       console.error("Greška pri preuzimanju sa Strave:", error);
     }
   };
 
+  // POPRAVLJENO: Sada glavni fajl čuva promene u isti ključ
   useEffect(() => {
-    localStorage.setItem('maraton_workout_history', JSON.stringify(workoutHistory));
+    localStorage.setItem('completed_workouts', JSON.stringify(workoutHistory));
   }, [workoutHistory]);
 
   const calculateTotalDoneKm = () => {
@@ -346,7 +354,7 @@ export default function App() {
   };
 
   return (
- <div style={{
+    <div style={{
       backgroundImage: `linear-gradient(rgba(18, 18, 18, 0.55), rgba(18, 18, 18, 0.55)), url('spoz.jpg')`,
       backgroundSize: 'cover',
       backgroundPosition: 'center',
