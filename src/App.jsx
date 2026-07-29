@@ -277,20 +277,25 @@ export default function App() {
             if (actDate >= planStartDate) {
               const existingAppEntry = newHistory[actDateStr] || {};
               
-              // Zastava da li za taj dan već postoji upisan Strava trening
-              const isAlreadyStrava = existingAppEntry.isStrava === true;
+              // NOVO: Niz Strava ID-jeva koji su već ubačeni u ovaj dan
+              const processedStravaIds = existingAppEntry.stravaIds || [];
+
+              // KLJUČNA ZAKRPA: Ako smo već ranije povukli ovaj ISTI Strava ID, preskoči ga!
+              if (processedStravaIds.includes(act.id)) {
+                return; // Prekini trenutni krug, idi na sledeći trening sa Strave
+              }
+
+              const isAlreadyStrava = processedStravaIds.length > 0;
 
               const distanceKm = Number((act.distance / 1000).toFixed(2));
               const durationSec = act.moving_time || 0;
               const currentHr = act.has_heartrate ? Math.round(act.average_heartrate) : null;
               const currentElev = act.total_elevation_gain ? Math.round(act.total_elevation_gain) : 0;
 
-              // SABIRANJE: Udaljenost, vreme i visinska razlika se uvek dodaju ako ih ima više istog dana
-              const newDistance = isAlreadyStrava ? Number((existingAppEntry.km + distanceKm).toFixed(2)) : distanceKm;
-              const newDuration = isAlreadyStrava ? existingAppEntry.seconds + durationSec : durationSec;
-              const newElevation = isAlreadyStrava ? (existingAppEntry.elevation || 0) + currentElev : currentElev;
+              const newDistance = isAlreadyStrava ? Number(((existingAppEntry.km || 0) + distanceKm).toFixed(2)) : distanceKm;
+              const newDuration = isAlreadyStrava ? ((existingAppEntry.seconds || 0) + durationSec) : durationSec;
+              const newElevation = isAlreadyStrava ? ((existingAppEntry.elevation || 0) + currentElev) : currentElev;
 
-              // PAMETNO PROSEČENJE SRČANOG RITMA: Uzimamo prosek zavisno od dužine trajanja oba dela treninga
               let newHr = currentHr;
               if (isAlreadyStrava && existingAppEntry.hr && currentHr) {
                 newHr = Math.round(((existingAppEntry.hr * existingAppEntry.seconds) + (currentHr * durationSec)) / newDuration);
@@ -298,7 +303,6 @@ export default function App() {
                 newHr = existingAppEntry.hr;
               }
 
-              // PRERAČUNAVANJE PACE-a na osnovu ukupnog sabranog vremena i sabrane kilometraže
               let paceStr = "--:--";
               if (newDistance > 0 && newDuration > 0) {
                 const paceSecPerKm = newDuration / newDistance;
@@ -331,7 +335,9 @@ export default function App() {
                 elevation: newElevation,    
                 status: 'done',
                 feedback: paceFeedback,
-                isStrava: true           
+                isStrava: true,
+                // NOVO: Zapamti ovaj Strava ID u istoriju kako ga sledeći put ne bismo duplirali
+                stravaIds: [...processedStravaIds, act.id]
               };
             }
           }
@@ -339,7 +345,7 @@ export default function App() {
 
         setWorkoutHistory(newHistory);
         localStorage.setItem('completed_workouts', JSON.stringify(newHistory));
-        alert(`Uspešno sinhronizovano sa Stravom! Proširena analitika i dupli treninzi su uračunati.`);
+        alert(`Uspešno sinhronizovano sa Stravom!`);
       }
     } catch (error) {
       console.error("Greška pri preuzimanju sa Strave:", error);
