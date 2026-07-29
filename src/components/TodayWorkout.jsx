@@ -389,23 +389,71 @@ export default function TodayWorkout({ onBack, onUpdateStatus }) {
           alignItems: 'center',
           width: '100%'
         }}>
-          {/* SADA SU DUGMIĆI UVEK VIDLJIVI BEZ OBZIRA NA ISTORIJU */}
-          <div style={{ display: 'flex', gap: '6px' }}>
+          {/* RAZDVOJENI DUGMIĆI SA SIMBOLIMA */}
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'center' }}>
             <button
               onClick={() => handleAction('completed')}
               title="Označi kao urađeno"
-              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#22c55e', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(34, 197, 94, 0.6)' }}
-            />
+              style={{ 
+                width: '32px', 
+                height: '32px', 
+                borderRadius: '50%', 
+                backgroundColor: '#22c55e', 
+                border: '1px solid rgba(255,255,255,0.3)', 
+                cursor: 'pointer', 
+                boxShadow: '0 0 10px rgba(34, 197, 94, 0.6)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: '#ffffff',
+                fontSize: '14px',
+                fontWeight: 'bold'
+              }}
+            >
+              ✓
+            </button>
             <button
               onClick={() => handleAction('moved')}
               title="Pomeri trening"
-              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#f97316', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(249, 115, 22, 0.6)' }}
-            />
+              style={{ 
+                width: '32px', 
+                height: '32px', 
+                borderRadius: '50%', 
+                backgroundColor: '#f97316', 
+                border: '1px solid rgba(255,255,255,0.3)', 
+                cursor: 'pointer', 
+                boxShadow: '0 0 10px rgba(249, 115, 22, 0.6)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: '#ffffff',
+                fontSize: '14px',
+                fontWeight: 'bold'
+              }}
+            >
+              ➔
+            </button>
             <button
               onClick={() => handleAction('skipped')}
               title="Preskoči"
-              style={{ width: '26px', height: '26px', borderRadius: '50%', backgroundColor: '#ef4444', border: 'none', cursor: 'pointer', boxShadow: '0 0 8px rgba(239, 68, 68, 0.6)' }}
-            />
+              style={{ 
+                width: '32px', 
+                height: '32px', 
+                borderRadius: '50%', 
+                backgroundColor: '#ef4444', 
+                border: '1px solid rgba(255,255,255,0.3)', 
+                cursor: 'pointer', 
+                boxShadow: '0 0 10px rgba(239, 68, 68, 0.6)',
+                display: 'flex',
+                justifyContent: 'center',
+                alignItems: 'center',
+                color: '#ffffff',
+                fontSize: '12px',
+                fontWeight: 'bold'
+              }}
+            >
+              ✕
+            </button>
           </div>
 
           <div style={{

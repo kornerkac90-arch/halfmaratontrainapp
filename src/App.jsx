@@ -275,24 +275,41 @@ export default function App() {
             actDate.setHours(0, 0, 0, 0);
 
             if (actDate >= planStartDate) {
+              const existingAppEntry = newHistory[actDateStr] || {};
+              
+              // Zastava da li za taj dan već postoji upisan Strava trening
+              const isAlreadyStrava = existingAppEntry.isStrava === true;
+
               const distanceKm = Number((act.distance / 1000).toFixed(2));
               const durationSec = act.moving_time || 0;
-              const avgSpeed = act.average_speed || 0; // Strava vraća metre po sekundi
-              const heartRate = act.has_heartrate ? Math.round(act.average_heartrate) : null;
-              const elevation = act.total_elevation_gain ? Math.round(act.total_elevation_gain) : 0;
+              const currentHr = act.has_heartrate ? Math.round(act.average_heartrate) : null;
+              const currentElev = act.total_elevation_gain ? Math.round(act.total_elevation_gain) : 0;
 
-              // Računanje PACE-a (min/km)
+              // SABIRANJE: Udaljenost, vreme i visinska razlika se uvek dodaju ako ih ima više istog dana
+              const newDistance = isAlreadyStrava ? Number((existingAppEntry.km + distanceKm).toFixed(2)) : distanceKm;
+              const newDuration = isAlreadyStrava ? existingAppEntry.seconds + durationSec : durationSec;
+              const newElevation = isAlreadyStrava ? (existingAppEntry.elevation || 0) + currentElev : currentElev;
+
+              // PAMETNO PROSEČENJE SRČANOG RITMA: Uzimamo prosek zavisno od dužine trajanja oba dela treninga
+              let newHr = currentHr;
+              if (isAlreadyStrava && existingAppEntry.hr && currentHr) {
+                newHr = Math.round(((existingAppEntry.hr * existingAppEntry.seconds) + (currentHr * durationSec)) / newDuration);
+              } else if (isAlreadyStrava && existingAppEntry.hr) {
+                newHr = existingAppEntry.hr;
+              }
+
+              // PRERAČUNAVANJE PACE-a na osnovu ukupnog sabranog vremena i sabrane kilometraže
               let paceStr = "--:--";
-              if (avgSpeed > 0) {
-                const paceMinsDecimal = 1000 / (avgSpeed * 60);
-                const pMins = Math.floor(paceMinsDecimal);
-                const pSecs = Math.round((paceMinsDecimal - pMins) * 60);
+              if (newDistance > 0 && newDuration > 0) {
+                const paceSecPerKm = newDuration / newDistance;
+                const pMins = Math.floor(paceSecPerKm / 60);
+                const pSecs = Math.round(paceSecPerKm % 60);
                 paceStr = `${pMins}:${pSecs < 10 ? '0' : ''}${pSecs}`;
               }
 
               let paceFeedback = "Odličan ritam! Pogodak u centar! 🟢";
-              if (distanceKm > 0 && durationSec > 0) {
-                const paceSecPerKm = durationSec / distanceKm;
+              if (newDistance > 0 && newDuration > 0) {
+                const paceSecPerKm = newDuration / newDistance;
                 if (paceSecPerKm < 410) {
                   paceFeedback = "Uspori malo! Krenuo si prebrzo u odnosu na plan. 🔴";
                 } else if (paceSecPerKm > 470) {
@@ -300,7 +317,6 @@ export default function App() {
                 }
               }
 
-              const existingAppEntry = newHistory[actDateStr] || {};
               const titleToKeep = (existingAppEntry.title && !existingAppEntry.title.includes('Strava')) 
                                   ? existingAppEntry.title 
                                   : (act.name || "Trčanje sa Strave");
@@ -308,14 +324,14 @@ export default function App() {
               newHistory[actDateStr] = {
                 ...existingAppEntry,
                 title: titleToKeep,
-                km: distanceKm,
-                seconds: durationSec,
-                pace: paceStr,           // NOVO
-                hr: heartRate,           // NOVO
-                elevation: elevation,    // NOVO
+                km: newDistance,
+                seconds: newDuration,
+                pace: paceStr,           
+                hr: newHr,           
+                elevation: newElevation,    
                 status: 'done',
                 feedback: paceFeedback,
-                isStrava: true           // Znak da imamo detaljne pro podatke
+                isStrava: true           
               };
             }
           }
@@ -323,7 +339,7 @@ export default function App() {
 
         setWorkoutHistory(newHistory);
         localStorage.setItem('completed_workouts', JSON.stringify(newHistory));
-        alert(`Uspešno sinhronizovano sa Stravom! Proširena analitika je dostupna u arhivi.`);
+        alert(`Uspešno sinhronizovano sa Stravom! Proširena analitika i dupli treninzi su uračunati.`);
       }
     } catch (error) {
       console.error("Greška pri preuzimanju sa Strave:", error);
