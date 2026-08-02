@@ -153,6 +153,35 @@ export default function App() {
     localStorage.setItem('marathon_training_plan_v2', JSON.stringify(trainingPlan));
   }, [trainingPlan]);
 
+  // --- NOVO: Kontrola istorije i Back dugmeta na telefonu ---
+  useEffect(() => {
+    window.history.replaceState({ screen: 'home' }, '', window.location.pathname);
+
+    const handlePopState = (event) => {
+      if (event.state && event.state.screen) {
+        setActiveScreen(event.state.screen);
+      } else {
+        setActiveScreen('home');
+      }
+    };
+
+    window.addEventListener('popstate', handlePopState);
+    
+    return () => {
+      window.removeEventListener('popstate', handlePopState);
+    };
+  }, []);
+
+  const navigateTo = (screen) => {
+    window.history.pushState({ screen }, '', window.location.pathname);
+    setActiveScreen(screen);
+  };
+
+  const handleBack = () => {
+    window.history.back();
+  };
+  // ---------------------------------------------------------
+
   const handleImageChange = (e) => {
     const file = e.target.files[0];
     if (file) {
@@ -417,14 +446,14 @@ export default function App() {
         />
 
         {activeScreen === 'today' ? (
-          <TodayWorkout onBack={() => setActiveScreen('home')} />
+          <TodayWorkout onBack={handleBack} />
         ) : activeScreen === 'currentWeek' ? (
-          <CurrentWeekView onBack={() => setActiveScreen('home')} />
+          <CurrentWeekView onBack={handleBack} />
         ) : activeScreen === 'plan' ? (
-          <TrainingPlan onBack={() => setActiveScreen('home')} />
+          <TrainingPlan onBack={handleBack} />
         ) : activeScreen === 'history' ? (
           <HistoryView 
-            onBack={() => setActiveScreen('home')} 
+            onBack={handleBack} 
             workoutHistory={workoutHistory} 
             masterPlan={trainingPlan} 
           />
@@ -502,7 +531,7 @@ export default function App() {
             </div>
 
             <div style={{ width: '100%', boxSizing: 'border-box' }}>
-              <MenuGrid onSelectMenu={(id) => setActiveScreen(id)} />
+              <MenuGrid onSelectMenu={(id) => navigateTo(id)} />
             </div>
 
           </div>
